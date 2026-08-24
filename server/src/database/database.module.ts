@@ -1,24 +1,10 @@
-import {Module} from '@nestjs/common';
-import { Pool } from 'pg';
-import {ConfigService} from '@nestjs/config';
-import { DB_POOL } from './constants';
+import { Global, Module } from '@nestjs/common';
+import { DatabaseService } from './database.service';
+import { DatabaseProvider } from './database.provider';
 
+@Global()
 @Module({
-  imports: [ConfigService],
-  providers: [
-    {
-      provide: DB_POOL,
-      useFactory: (configService: ConfigService) => {
-        return new Pool({
-          host: configService.get('DB_HOST'),
-          port: Number(configService.get('DB_PORT')) ?? 5432,
-          user: configService.get('DB_USER'),
-          password: configService.get('DB_PASSWORD'),
-          database: configService.get('DB_NAME'),
-        });
-      }
-    }
-  ],
-  exports: [DB_POOL],
+  providers: [DatabaseService, DatabaseProvider],
+  exports: [DatabaseProvider],
 })
 export class DatabaseModule {}
