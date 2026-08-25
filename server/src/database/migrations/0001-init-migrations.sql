@@ -1,0 +1,7 @@
+
+CREATE TABLE IF NOT EXISTS migrations (
+	id UUID PRIMARY KEY DEFAULT get_random_uuid(),
+	filename VARCHAR(128) NOT NULL UNIQUE,
+	hash TEXT NOT NULL,
+	last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
