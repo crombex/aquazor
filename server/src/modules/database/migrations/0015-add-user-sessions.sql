@@ -1,5 +1,7 @@
 CREATE TABLE user_sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  account_id UUID REFERENCES accounts(id) NOT NULL,
-  session TEXT NOT NULL
+  user_id UUID REFERENCES users(id) NOT NULL,
+  started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  expired_at TIMESTAMPTZ NOT NULL,
+  device TEXT
 )
