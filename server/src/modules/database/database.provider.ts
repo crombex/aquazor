@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import { DB_POOL } from './types';
-import { ConfigService } from '@nestjs/config/dist/config.service';
+import { ConfigService } from '@nestjs/config';
 
 export const DatabaseProvider = {
   provide: DB_POOL,
