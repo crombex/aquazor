@@ -3,7 +3,6 @@ import { RegisterUserDTO } from '../users/dto/register-user.dto';
 import { AuthService } from './auth.service';
 import type { Request, Response } from 'express';
 import { LoginUserDTO } from './dto/login.dto';
-import { TAuthCookies } from './auth.types';
 import { CookiesService } from '../cookies/cookies.service';
 import { AuthGuard } from './auth.guard';
 
