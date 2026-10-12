@@ -2,16 +2,20 @@ import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
-import { AuthRepository } from './auth.repository';
-import { AuthGuard } from './auth.guard';
 import { CookiesModule } from '../cookies/cookies.module';
-import { AuthSessionService } from './auth-session.service';
-import { AuthTokenService } from './auth-token.service';
+import { SessionsModule } from '../sessions/sessions.module';
+import { TokensModule } from '../tokens/tokens.module';
+import { AuthGuardModule } from '../guards/auth-guard.module';
 
 @Module({
-  imports: [UsersModule, CookiesModule],
+  imports: [
+    AuthGuardModule,
+    UsersModule,
+    CookiesModule,
+    SessionsModule,
+    TokensModule,
+  ],
   controllers: [AuthController],
-  providers: [AuthService, AuthRepository, AuthGuard, AuthSessionService, AuthTokenService],
-  exports: [AuthGuard]
+  providers: [AuthService],
 })
 export class AuthModule {}

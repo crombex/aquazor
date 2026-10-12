@@ -1,23 +1,26 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthRepository } from './auth.repository';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { RegisterUserDTO } from '../users/dto/register-user.dto';
-import { Roles, TUserInfoFromDB } from '../users/users.types';
-import { TLoginData, TRegisterData, TUserInRequest } from './auth.types';
+import { Roles, TUserEntityMapped } from '../users/users.types';
+import { TRegisterData, TUserInRequest } from './auth.types';
 import { hash, compare } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
-import { AuthTokenService } from './auth-token.service';
-import { AuthSessionService } from './auth-session.service';
+import { TokensService } from '../tokens/tokens.service';
+import { SessionsService } from '../sessions/sessions.service';
 import { LoginUserDTO } from './dto/login.dto';
+import { UserEntity } from '../users/users.entity';
 
 @Injectable()
 export class AuthService {
   private bcryptHashRounds: number;
 
   constructor(
-    private authRepository: AuthRepository,
-    private authTokenService: AuthTokenService,
-    private authSessionService: AuthSessionService,
+    private tokensService: TokensService,
+    private sessionsService: SessionsService,
     private usersService: UsersService,
     private configService: ConfigService,
   ) {
@@ -28,14 +31,25 @@ export class AuthService {
     { email, password, nickname, birthdate }: RegisterUserDTO,
     userDevice?: string,
   ) {
-    const [userWithThisEmail, userWithThisNickname] = [
-      await this.usersService.findOneByEmail(email),
-      await this.usersService.findOneByNickname(nickname),
-    ];
+    let userWithThisEmail: TUserEntityMapped | null,
+      userWithThisNickname: TUserEntityMapped | null;
+    try {
+      userWithThisEmail = await this.usersService.findOneByEmail(email);
+    } catch (error) {
+      userWithThisEmail = null;
+    }
+
+    try {
+      userWithThisNickname =
+        await this.usersService.findOneByNickname(nickname);
+    } catch (error) {
+      userWithThisNickname = null;
+    }
+
     if (userWithThisEmail !== null) {
-      throw new ConflictException('This email address is already taken')
+      throw new ConflictException('This email address is already taken');
     } else if (userWithThisNickname !== null) {
-      throw new ConflictException('This nickname is already taken')
+      throw new ConflictException('This nickname is already taken');
     }
 
     const hashedPassword = await hash(password, this.bcryptHashRounds);
@@ -46,16 +60,16 @@ export class AuthService {
       passwordHash: hashedPassword,
     };
     const userId = await this.usersService.createUser(updatedUserInfo);
-    const userSessionId = await this.authSessionService.createSession(
+    const userSessionId = await this.sessionsService.createSession(
       userId,
       userDevice ?? 'unknown',
     );
-    const accessToken = this.authTokenService.generateAccessToken({
+    const accessToken = this.tokensService.generateAccessToken({
       userId,
       userSessionId,
       roles: [Roles.USER],
     });
-    const refreshToken = this.authTokenService.generateRefreshToken({
+    const refreshToken = this.tokensService.generateRefreshToken({
       userId,
       userSessionId,
     });
@@ -63,12 +77,15 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async login(
-    { emailOrNickname, password }: LoginUserDTO,
-    userDevice: string,
-  ) {
-    const foundUser =
-      await this.usersService.findOneByEmailOrNickname(emailOrNickname);
+  async login({ emailOrNickname, password }: LoginUserDTO, userDevice: string) {
+    let foundUser: UserEntity | null;
+    try {
+      foundUser =
+        await this.usersService.findOneByEmailOrNickname(emailOrNickname);
+    } catch (error) {
+      foundUser = null;
+    }
+
     const passwordToCompare = foundUser
       ? foundUser.passwordHash
       : '\$2b\$15\$abcdefghijklmnopqrstuvwx';
@@ -77,24 +94,24 @@ export class AuthService {
       throw new UnauthorizedException('Wrong email/nickname or password');
     }
     if (!userDevice) {
-      throw new UnauthorizedException('Header "User-Agent" needed')
+      throw new UnauthorizedException('Header "User-Agent" needed');
     }
 
     /**
      * Мы удаляем дубликаты сессий из базы, так как если пользователь почистит куки, то при повторном логине новая сессия добавится, а старая никуда
      */
-    await this.authSessionService.removeSession(foundUser.id, userDevice)
+    await this.sessionsService.removeSession(foundUser.id, userDevice);
 
-    const sessionId = await this.authSessionService.createSession(
+    const sessionId = await this.sessionsService.createSession(
       foundUser.id,
       userDevice,
     );
-    const accessToken = this.authTokenService.generateAccessToken({
+    const accessToken = this.tokensService.generateAccessToken({
       userId: foundUser.id,
       userSessionId: sessionId,
       roles: foundUser.roles,
     });
-    const refreshToken = this.authTokenService.generateRefreshToken({
+    const refreshToken = this.tokensService.generateRefreshToken({
       userId: foundUser.id,
       userSessionId: sessionId,
     });
@@ -106,11 +123,11 @@ export class AuthService {
   }
 
   async refreshToken(user: TUserInRequest) {
-    if (!(await this.authRepository.checkSession(user.sid))) {
+    if (!(await this.sessionsService.checkSession(user.sid))) {
       throw new UnauthorizedException('Session does not exist');
     }
     const foundUser = (await this.usersService.findOneById(user.sub))!;
-    const newAccessToken = this.authTokenService.generateAccessToken({
+    const newAccessToken = this.tokensService.generateAccessToken({
       userId: user.sub,
       userSessionId: user.sid,
       roles: foundUser.roles,
@@ -119,10 +136,10 @@ export class AuthService {
   }
 
   async logout(userId: string, userDevice: string) {
-    await this.authSessionService.removeSession(userId, userDevice);
+    await this.sessionsService.removeSession(userId, userDevice);
   }
 
   async logoutAll(userId: string) {
-    await this.authSessionService.removeAllSessions(userId);
+    await this.sessionsService.removeAllSessions(userId);
   }
 }
