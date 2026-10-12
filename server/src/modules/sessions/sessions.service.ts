@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { AuthRepository } from './auth.repository';
+import { SessionsRepository } from './sessions.repository';
 import { ConfigService } from '@nestjs/config';
 import { addStringTime } from '../../utils/date-and-time';
 import ms from 'ms';
+import { mapKeysToCamelCase } from '../../utils/change-case';
+import { SessionEntity } from './sessions.entity';
 
 @Injectable()
-export class AuthSessionService {
+export class SessionsService {
   private sessionMaxAgeTime: ms.StringValue;
 
   constructor(
-    private authRepository: AuthRepository,
+    private sessionsRepository: SessionsRepository,
     private configService: ConfigService,
   ) {
     this.sessionMaxAgeTime = this.configService.getOrThrow('REFRESH_TOKEN_EXP');
@@ -19,7 +21,7 @@ export class AuthSessionService {
     const sessionExpiresAt = new Date(
       addStringTime(Date.now(), this.sessionMaxAgeTime),
     ).toISOString();
-    const sessionId = await this.authRepository.createSession({
+    const sessionId = await this.sessionsRepository.createSession({
       userId,
       userDevice,
       sessionExpiresAt,
@@ -28,14 +30,23 @@ export class AuthSessionService {
   }
 
   async checkSession(sid: string) {
-    return this.authRepository.checkSession(sid);
+    const session = await this.sessionsRepository.findSession(sid);
+    if (session) {
+      const mappedSession = mapKeysToCamelCase<SessionEntity>(session)
+      if (new Date(mappedSession.expiredAt) > new Date()) {
+        return true
+      } else {
+        await this.sessionsRepository.removeSessionById(mappedSession.id)
+        return false
+      }
+    }
   }
 
   async removeSession(userId: string, userDevice: string) {
-    this.authRepository.removeSession(userId, userDevice)
+    this.sessionsRepository.removeSession(userId, userDevice)
   }    
 
   async removeAllSessions(userId: string) {
-    this.authRepository.removeAllSessions(userId)
+    this.sessionsRepository.removeAllSessions(userId)
   }
 }

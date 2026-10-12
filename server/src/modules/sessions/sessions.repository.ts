@@ -1,10 +1,10 @@
 import { Pool } from 'pg';
 import { Inject, Injectable } from '@nestjs/common';
 import { DB_POOL } from '../database/types';
-import { IAuthSession, ICreateAuthSession } from './auth.types';
+import { IAuthSessionInDatabase, ICreateAuthSession } from './sessions.types'
 
 @Injectable()
-export class AuthRepository {
+export class SessionsRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
 
   async createSession({
@@ -19,16 +19,12 @@ export class AuthRepository {
     return result.rows[0].id;
   }
 
-  async checkSession(sid: string) {
-    const session = await this.pool.query<IAuthSession>(
+  async findSession(sid: string) {
+    const session = await this.pool.query<IAuthSessionInDatabase>(
       `SELECT * FROM user_sessions WHERE id = $1`,
       [sid],
     );
-
-    return session.rows.length !== 0 &&
-      new Date(session.rows[0].expiredAt) > new Date()
-      ? true
-      : false;
+    return session.rows.length > 0 ? session.rows[0] : null
   }
 
   async removeSession(userId: string, userDevice: string) {
@@ -36,6 +32,13 @@ export class AuthRepository {
       `DELETE FROM user_sessions WHERE user_id = $1 AND device = $2`,
       [userId, userDevice],
     );
+  }
+
+  async removeSessionById(id: string) {
+      await this.pool.query(
+        `DELETE FROM user_sessions WHERE id = $1`,
+        [id],
+      );
   }
 
   async removeAllSessions(userId: string) {
