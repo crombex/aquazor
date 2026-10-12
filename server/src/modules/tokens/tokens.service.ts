@@ -4,22 +4,16 @@ import ms from 'ms';
 import {
   ICreateAccessToken,
   ICreateRefreshToken,
-  TRefreshTokenBody,
-} from './auth.types';
-import { sign, verify } from 'jsonwebtoken';
-import { addStringTime } from 'src/utils/date-and-time';
-import { AuthSessionService } from './auth-session.service';
+} from './tokens.types';
+import { JsonWebTokenError, sign, verify } from 'jsonwebtoken';
 
 @Injectable()
-export class AuthTokenService {
+export class TokensService {
   private accessTokenExpiresAt: ms.StringValue;
   private refreshTokenExpiresAt: ms.StringValue;
   private JWTSecret: string;
 
-  constructor(
-    private configService: ConfigService,
-    private sessionService: AuthSessionService,
-  ) {
+  constructor(private configService: ConfigService) {
     this.accessTokenExpiresAt =
       this.configService.getOrThrow<ms.StringValue>('ACCESS_TOKEN_EXP');
     this.refreshTokenExpiresAt =
@@ -39,15 +33,17 @@ export class AuthTokenService {
     });
   }
 
-  verifyToken(refreshToken: string) {
+  verifyToken<T>(token: string) {
     try {
       const decodedToken = verify(
-        refreshToken,
-        this.JWTSecret,
-      ) as TRefreshTokenBody;
+        token,
+        this.JWTSecret
+      ) as T;
       return decodedToken;
     } catch (error) {
-      throw new UnauthorizedException('invalid token');
+      if (error instanceof JsonWebTokenError) {
+        throw new UnauthorizedException(error.message);
+      }
     }
   }
 }
