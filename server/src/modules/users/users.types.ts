@@ -1,16 +1,30 @@
+import { UserEntity } from './users.entity';
+
 export enum Roles {
   ADMIN = 'admin',
   USER = 'user',
 }
 
-export type TUserInfoFromDB = {
+export type TUserEntityMapped = Omit<
+  UserEntity,
+  'roles' | 'isDeleted' | 'isBlocked' | 'lastOnline' | 'passwordHash'
+> & {
+  roles: Roles[];
+};
+
+export type TUserInDatabase = {
   id: string;
   email: string;
-  nickname: string;
-  passwordHash: string;
-  roles: Roles[];
-} | null;
-
-export type TUserInfoInDB = Omit<TUserInfoFromDB, 'roles'> & {
+  password_hash: string;
+  registered_at: string;
+  last_online: string;
+  is_blocked: boolean;
+  is_deleted: boolean;
   roles: string;
+  avatar_url: string;
+  birthdate: string;
+  nickname: string;
+  experience: number;
+  coins: number;
+  special_coins: number;
 };
