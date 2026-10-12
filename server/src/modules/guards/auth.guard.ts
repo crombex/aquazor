@@ -5,21 +5,19 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { verify } from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
-import {
-  TAccessTokenBody,
-  TAuthCookies,
-  TRefreshTokenBody,
-} from './auth.types';
-import { AuthSessionService } from './auth-session.service';
+import { TAuthCookies } from '../cookies/cookie.types';
+import { SessionsService } from '../sessions/sessions.service';
+import { TokensService } from '../tokens/tokens.service';
+import { TAccessTokenBody, TRefreshTokenBody } from '../tokens/tokens.types';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   JWTSecret: string;
   constructor(
+    private tokensService: TokensService,
     private configService: ConfigService,
-    private sessionService: AuthSessionService,
+    private sessionsService: SessionsService,
   ) {
     this.JWTSecret = this.configService.getOrThrow('JWT_SECRET');
   }
@@ -31,12 +29,10 @@ export class AuthGuard implements CanActivate {
     if (!accessToken && !refreshToken) {
       throw new UnauthorizedException('Authorization cookie is missing');
     } else if (refreshToken) {
+      const decodedRefreshToken =
+        this.tokensService.verifyToken<TRefreshTokenBody>(refreshToken)!;
       try {
-        const decodedRefreshToken = verify(
-          refreshToken,
-          this.JWTSecret,
-        ) as TRefreshTokenBody;
-        if (await this.sessionService.checkSession(decodedRefreshToken.sid)) {
+        if (await this.sessionsService.checkSession(decodedRefreshToken.sid)) {
           request.user = {
             sub: decodedRefreshToken.sub,
             sid: decodedRefreshToken.sid,
@@ -47,12 +43,10 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException(`Error while checking token: ${error}`);
       }
     } else if (accessToken) {
+      const decodedAccessToken =
+        this.tokensService.verifyToken<TAccessTokenBody>(accessToken)!;
       try {
-        const decodedAccessToken = verify(
-          accessToken,
-          this.JWTSecret,
-        ) as TAccessTokenBody;
-        if (await this.sessionService.checkSession(decodedAccessToken.sid)) {
+        if (await this.sessionsService.checkSession(decodedAccessToken.sid)) {
           request.user = {
             sub: decodedAccessToken.sub,
             roles: decodedAccessToken.roles,
