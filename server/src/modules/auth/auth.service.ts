@@ -34,14 +34,14 @@ export class AuthService {
     let userWithThisEmail: TUserEntityMapped | null,
       userWithThisNickname: TUserEntityMapped | null;
     try {
-      userWithThisEmail = await this.usersService.findOneByEmail(email);
+      userWithThisEmail = await this.usersService.findOneByEmail(email, {includeSensitiveData: false});
     } catch (error) {
       userWithThisEmail = null;
     }
 
     try {
       userWithThisNickname =
-        await this.usersService.findOneByNickname(nickname);
+        await this.usersService.findOneByNickname(nickname, {includeSensitiveData: false});
     } catch (error) {
       userWithThisNickname = null;
     }
@@ -81,7 +81,7 @@ export class AuthService {
     let foundUser: UserEntity | null;
     try {
       foundUser =
-        await this.usersService.findOneByEmailOrNickname(emailOrNickname);
+        await this.usersService.findOneByEmailOrNickname(emailOrNickname, {includeSensitiveData: true}) as UserEntity;
     } catch (error) {
       foundUser = null;
     }
@@ -98,7 +98,7 @@ export class AuthService {
     }
 
     /**
-     * Мы удаляем дубликаты сессий из базы, так как если пользователь почистит куки, то при повторном логине новая сессия добавится, а старая никуда
+     * Мы удаляем дубликаты сессий из базы, так как если пользователь почистит куки, то при повторном логине новая сессия добавится, а старая никуда не исчезнет
      */
     await this.sessionsService.removeSession(foundUser.id, userDevice);
 

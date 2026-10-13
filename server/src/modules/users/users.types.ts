@@ -28,3 +28,10 @@ export type TUserInDatabase = {
   coins: number;
   special_coins: number;
 };
+
+export type TUserFindOptions = {
+  /**
+   * Never set 'true' if this user object leaves the server because of sensitive data
+   */
+  includeSensitiveData?: boolean;
+};

@@ -3,7 +3,7 @@ import { TRegisterData } from '../auth/auth.types';
 import { UsersRepository } from './users.repository';
 import { mapKeysToCamelCase } from '../../utils/change-case';
 import { UserEntity } from './users.entity';
-import { TUserEntityMapped } from './users.types';
+import { TUserEntityMapped, TUserFindOptions } from './users.types';
 
 @Injectable()
 export class UsersService {
@@ -13,42 +13,80 @@ export class UsersService {
     return roles.split(';').filter(Boolean);
   }
 
+  private removeSensitiveFields(user: UserEntity) {
+    return {
+      id: user.id,
+      roles: user.roles,
+      email: user.email,
+      avatarUrl: user.avatarUrl,
+      coins: user.coins,
+      specialCoins: user.specialCoins,
+      registeredAt: user.registeredAt,
+      birthdate: user.birthdate,
+      experience: user.experience,
+      nickname: user.nickname,
+    } as TUserEntityMapped;
+  }
+
   createUser(registerInfo: TRegisterData) {
     return this.usersRepository.createUser(registerInfo);
   }
 
-  async findOneByEmail(email: string) {
+  async findOneByEmail(
+    email: string,
+    options: TUserFindOptions = { includeSensitiveData: false },
+  ): Promise<TUserEntityMapped | UserEntity> {
     const user = await this.usersRepository.findOneBy({ email });
     if (user !== null) {
-      return {
+      const userMappedFull = {
         ...mapKeysToCamelCase<UserEntity>(user),
         roles: this.mapRoles(user.roles),
       } as UserEntity;
+      if (options.includeSensitiveData) {
+        return userMappedFull;
+      } else {
+        return this.removeSensitiveFields(userMappedFull);
+      }
     } else {
       throw new NotFoundException('User with this email does not exist');
     }
   }
 
-  async findOneByNickname(nickname: string) {
+  async findOneByNickname(
+    nickname: string,
+    options: TUserFindOptions = { includeSensitiveData: false },
+  ): Promise<TUserEntityMapped | UserEntity> {
     const user = await this.usersRepository.findOneBy({ nickname });
     if (user !== null) {
-      return {
+      const userMappedFull = {
         ...mapKeysToCamelCase<UserEntity>(user),
         roles: this.mapRoles(user.roles),
       } as UserEntity;
+      if (options.includeSensitiveData) {
+        return userMappedFull;
+      } else {
+        return this.removeSensitiveFields(userMappedFull);
+      }
     } else {
       throw new NotFoundException('User with this nickname does not exist');
     }
   }
 
-  async findOneByEmailOrNickname(emailOrNickname: string) {
+  async findOneByEmailOrNickname(
+    emailOrNickname: string,
+    options: TUserFindOptions = { includeSensitiveData: false },
+  ): Promise<TUserEntityMapped | UserEntity> {
     try {
-      const user = await this.findOneByEmail(emailOrNickname);
+      const user = await this.findOneByEmail(emailOrNickname, {
+        includeSensitiveData: options.includeSensitiveData,
+      });
       return user;
     } catch (error) {}
 
     try {
-      const user = await this.findOneByNickname(emailOrNickname);
+      const user = await this.findOneByNickname(emailOrNickname, {
+        includeSensitiveData: options.includeSensitiveData,
+      });
       return user;
     } catch (error) {}
 
@@ -59,29 +97,18 @@ export class UsersService {
 
   async findOneById(
     id: string,
-    options: { full: boolean } = {full: false},
+    options: TUserFindOptions = { includeSensitiveData: false },
   ): Promise<TUserEntityMapped | UserEntity> {
     const user = await this.usersRepository.findOneBy({ id });
     if (user !== null) {
       const userMappedFull = {
         ...mapKeysToCamelCase<UserEntity>(user),
         roles: this.mapRoles(user.roles),
-      };
-      if (options.full) {
-        return userMappedFull as UserEntity;
+      } as UserEntity;
+      if (options.includeSensitiveData) {
+        return userMappedFull;
       } else {
-        return {
-          id: userMappedFull.id,
-          roles: userMappedFull.roles,
-          email: userMappedFull.email,
-          avatarUrl: userMappedFull.avatarUrl,
-          coins: userMappedFull.coins,
-          specialCoins: userMappedFull.specialCoins,
-          registeredAt: userMappedFull.registeredAt,
-          birthdate: userMappedFull.birthdate,
-          experience: userMappedFull.experience,
-          nickname: userMappedFull.nickname,
-        } as TUserEntityMapped;
+        return this.removeSensitiveFields(userMappedFull);
       }
     } else {
       throw new NotFoundException('User with this id does not exist');

@@ -11,6 +11,6 @@ export class UsersController {
   @Get('/me')
   async getUserOwnData(@Req() req: Request) {
     const userId = req.user.sub;
-    return await this.usersService.findOneById(userId);
+    return await this.usersService.findOneById(userId, {includeSensitiveData: false});
   }
 }
