@@ -123,9 +123,7 @@ export class AuthService {
   }
 
   async refreshToken(user: TUserInRequest) {
-    if (!(await this.sessionsService.checkSession(user.sid))) {
-      throw new UnauthorizedException('Session does not exist');
-    }
+    await this.sessionsService.findSession(user.sid)
     const foundUser = (await this.usersService.findOneById(user.sub))!;
     const newAccessToken = this.tokensService.generateAccessToken({
       userId: user.sub,

@@ -32,13 +32,12 @@ export class AuthGuard implements CanActivate {
       const decodedRefreshToken =
         this.tokensService.verifyToken<TRefreshTokenBody>(refreshToken)!;
       try {
-        if (await this.sessionsService.checkSession(decodedRefreshToken.sid)) {
-          request.user = {
-            sub: decodedRefreshToken.sub,
-            sid: decodedRefreshToken.sid,
-          };
-          return true;
-        }
+        await this.sessionsService.findSession(decodedRefreshToken.sid);
+        request.user = {
+          sub: decodedRefreshToken.sub,
+          sid: decodedRefreshToken.sid,
+        };
+        return true;
       } catch (error) {
         throw new UnauthorizedException(`Error while checking token: ${error}`);
       }
@@ -46,14 +45,13 @@ export class AuthGuard implements CanActivate {
       const decodedAccessToken =
         this.tokensService.verifyToken<TAccessTokenBody>(accessToken)!;
       try {
-        if (await this.sessionsService.checkSession(decodedAccessToken.sid)) {
-          request.user = {
-            sub: decodedAccessToken.sub,
-            roles: decodedAccessToken.roles,
-            sid: decodedAccessToken.sid,
-          };
-          return true;
-        }
+        await this.sessionsService.findSession(decodedAccessToken.sid);
+        request.user = {
+          sub: decodedAccessToken.sub,
+          roles: decodedAccessToken.roles,
+          sid: decodedAccessToken.sid,
+        };
+        return true;
       } catch (error) {
         throw new UnauthorizedException(`Error while checking token: ${error}`);
       }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { SessionsRepository } from './sessions.repository';
 import { ConfigService } from '@nestjs/config';
 import { addStringTime } from '../../utils/date-and-time';
@@ -29,16 +29,18 @@ export class SessionsService {
     return sessionId;
   }
 
-  async checkSession(sid: string) {
+  async findSession(sid: string) {
     const session = await this.sessionsRepository.findSession(sid);
     if (session) {
       const mappedSession = mapKeysToCamelCase<SessionEntity>(session)
       if (new Date(mappedSession.expiredAt) > new Date()) {
-        return true
+        return mappedSession
       } else {
         await this.sessionsRepository.removeSessionById(mappedSession.id)
-        return false
+        throw new UnauthorizedException('Session expired')
       }
+    } else {
+      throw new UnauthorizedException('Session not found')
     }
   }
 
