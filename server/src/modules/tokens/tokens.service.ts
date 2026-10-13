@@ -1,10 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
-import {
-  ICreateAccessToken,
-  ICreateRefreshToken,
-} from './tokens.types';
+import { ICreateAccessToken, ICreateRefreshToken } from './tokens.types';
 import { JsonWebTokenError, sign, verify } from 'jsonwebtoken';
 
 @Injectable()
@@ -35,10 +32,7 @@ export class TokensService {
 
   verifyToken<T>(token: string) {
     try {
-      const decodedToken = verify(
-        token,
-        this.JWTSecret
-      ) as T;
+      const decodedToken = verify(token, this.JWTSecret) as T;
       return decodedToken;
     } catch (error) {
       if (error instanceof JsonWebTokenError) {

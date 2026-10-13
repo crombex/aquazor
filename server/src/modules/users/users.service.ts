@@ -76,23 +76,23 @@ export class UsersService {
     emailOrNickname: string,
     options: TUserFindOptions = { includeSensitiveData: false },
   ): Promise<TUserEntityMapped | UserEntity> {
+    let foundUser: TUserEntityMapped | UserEntity;
     try {
-      const user = await this.findOneByEmail(emailOrNickname, {
+      foundUser = await this.findOneByEmail(emailOrNickname, {
         includeSensitiveData: options.includeSensitiveData,
       });
-      return user;
-    } catch (error) {}
-
-    try {
-      const user = await this.findOneByNickname(emailOrNickname, {
-        includeSensitiveData: options.includeSensitiveData,
-      });
-      return user;
-    } catch (error) {}
-
-    throw new NotFoundException(
-      'User with this email/nickname does not exists',
-    );
+    } catch {
+      try {
+        foundUser = await this.findOneByNickname(emailOrNickname, {
+          includeSensitiveData: options.includeSensitiveData,
+        });
+      } catch {
+        throw new NotFoundException(
+          'User with this email/nickname does not exists',
+        );
+      }
+    }
+    return foundUser;
   }
 
   async findOneById(

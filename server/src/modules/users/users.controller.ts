@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req } from '@nestjs/common';
 import { AuthGuard } from '../guards/auth.guard';
 import type { Request } from 'express';
 import { UsersService } from './users.service';
@@ -11,6 +11,8 @@ export class UsersController {
   @Get('/me')
   async getUserOwnData(@Req() req: Request) {
     const userId = req.user.sub;
-    return await this.usersService.findOneById(userId, {includeSensitiveData: false});
+    return await this.usersService.findOneById(userId, {
+      includeSensitiveData: false,
+    });
   }
 }

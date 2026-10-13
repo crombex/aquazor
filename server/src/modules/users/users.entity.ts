@@ -1,4 +1,4 @@
-import { Roles } from "./users.types";
+import { Roles } from './users.types';
 
 export interface UserEntity {
   id: string;
@@ -8,7 +8,7 @@ export interface UserEntity {
   lastOnline: string;
   isBlocked: boolean;
   isDeleted: boolean;
-  roles: Roles[]
+  roles: Roles[];
   avatarUrl: string;
   birthdate: string;
   nickname: string;

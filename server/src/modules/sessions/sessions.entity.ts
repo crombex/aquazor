@@ -3,5 +3,5 @@ export interface SessionEntity {
   userId: string;
   startedAt: string;
   expiredAt: string;
-  device: string
+  device: string;
 }

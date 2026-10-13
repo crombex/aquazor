@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import 'dotenv/config'
+import 'dotenv/config';
 
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
@@ -10,22 +10,22 @@ const pool = new Pool({
 });
 
 async function restoreMigrations() {
-  const client = await pool.connect()
+  const client = await pool.connect();
 
   try {
-    console.log('Restoring database (public schema)...')
-    await client.query('BEGIN')
-    await client.query('DROP SCHEMA public CASCADE')
-    await client.query('CREATE SCHEMA public')
-    await client.query('COMMIT')
-    console.log('Public schema was successfully restored!')
+    console.log('Restoring database (public schema)...');
+    await client.query('BEGIN');
+    await client.query('DROP SCHEMA public CASCADE');
+    await client.query('CREATE SCHEMA public');
+    await client.query('COMMIT');
+    console.log('Public schema was successfully restored!');
   } catch (error) {
-    await client.query('ROLLBACK')
-    console.error(`Error while executing SQL: ${error}`)
+    await client.query('ROLLBACK');
+    console.error(`Error while executing SQL: ${error}`);
   } finally {
-    client.release()
-    await pool.end()
+    client.release();
+    await pool.end();
   }
 }
 
-restoreMigrations()
+restoreMigrations(); // eslint-disable-line @typescript-eslint/no-floating-promises

@@ -5,8 +5,13 @@ import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [DatabaseModule, ConfigModule.forRoot({
-    isGlobal: true,
-  }), AuthModule, UsersModule]
+  imports: [
+    DatabaseModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    AuthModule,
+    UsersModule,
+  ],
 })
 export class AppModule {}

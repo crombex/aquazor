@@ -1,5 +1,5 @@
-import { JwtPayload } from "jsonwebtoken";
-import { Roles } from "../users/users.types";
+import { JwtPayload } from 'jsonwebtoken';
+import { Roles } from '../users/users.types';
 
 export interface ICreateAccessToken {
   userId: string;

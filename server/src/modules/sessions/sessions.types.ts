@@ -9,5 +9,5 @@ export interface IAuthSessionInDatabase {
   user_id: string;
   started_at: string;
   expired_at: string;
-  device: string
+  device: string;
 }

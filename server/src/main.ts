@@ -11,9 +11,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new AppExceptionFilter());
-  app.useLogger(new ConsoleLogger())
-  app.use(cookieParser())
+  app.useLogger(new ConsoleLogger());
+  app.use(cookieParser());
   const configService = app.get(ConfigService);
   await app.listen(configService.get('PORT') || 3000);
 }
-bootstrap();
+bootstrap(); // eslint-disable-line @typescript-eslint/no-floating-promises

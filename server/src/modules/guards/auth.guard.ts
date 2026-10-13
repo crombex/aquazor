@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -9,7 +10,9 @@ import { ConfigService } from '@nestjs/config';
 import { TAuthCookies } from '../cookies/cookie.types';
 import { SessionsService } from '../sessions/sessions.service';
 import { TokensService } from '../tokens/tokens.service';
-import { TAccessTokenBody, TRefreshTokenBody } from '../tokens/tokens.types';
+import { TAccessTokenBody } from '../tokens/tokens.types';
+import { UsersService } from '../users/users.service';
+import { UserEntity } from '../users/users.entity';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -18,43 +21,34 @@ export class AuthGuard implements CanActivate {
     private tokensService: TokensService,
     private configService: ConfigService,
     private sessionsService: SessionsService,
+    private usersService: UsersService,
   ) {
     this.JWTSecret = this.configService.getOrThrow('JWT_SECRET');
   }
 
   async canActivate(context: ExecutionContext): Promise<any> {
     const request = context.switchToHttp().getRequest<Request>();
-    const { accessToken, refreshToken } = request.cookies as TAuthCookies;
+    const { accessToken } = request.cookies as TAuthCookies;
 
-    if (!accessToken && !refreshToken) {
+    if (!accessToken) {
       throw new UnauthorizedException('Authorization cookie is missing');
-    } else if (refreshToken) {
-      const decodedRefreshToken =
-        this.tokensService.verifyToken<TRefreshTokenBody>(refreshToken)!;
-      try {
-        await this.sessionsService.findSession(decodedRefreshToken.sid);
-        request.user = {
-          sub: decodedRefreshToken.sub,
-          sid: decodedRefreshToken.sid,
-        };
-        return true;
-      } catch (error) {
-        throw new UnauthorizedException(`Error while checking token: ${error}`);
-      }
-    } else if (accessToken) {
-      const decodedAccessToken =
-        this.tokensService.verifyToken<TAccessTokenBody>(accessToken)!;
-      try {
-        await this.sessionsService.findSession(decodedAccessToken.sid);
-        request.user = {
-          sub: decodedAccessToken.sub,
-          roles: decodedAccessToken.roles,
-          sid: decodedAccessToken.sid,
-        };
-        return true;
-      } catch (error) {
-        throw new UnauthorizedException(`Error while checking token: ${error}`);
-      }
     }
+    const decodedAccessToken =
+      this.tokensService.verifyToken<TAccessTokenBody>(accessToken)!;
+    const user = (await this.usersService.findOneById(decodedAccessToken.sub, {
+      includeSensitiveData: true,
+    })) as UserEntity;
+    if (user.isBlocked) {
+      throw new ForbiddenException('User with this id is blocked');
+    } else if (user.isDeleted) {
+      throw new ForbiddenException('User with this id was deleted');
+    }
+    await this.sessionsService.findSession(decodedAccessToken.sid);
+    request.user = {
+      sub: decodedAccessToken.sub,
+      roles: decodedAccessToken.roles,
+      sid: decodedAccessToken.sid,
+    };
+    return true;
   }
 }

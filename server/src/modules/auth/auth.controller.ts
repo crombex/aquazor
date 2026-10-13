@@ -13,6 +13,7 @@ import type { Request, Response } from 'express';
 import { LoginUserDTO } from './dto/login.dto';
 import { CookiesService } from '../cookies/cookies.service';
 import { AuthGuard } from '../guards/auth.guard';
+import { TAuthCookies } from '../cookies/cookie.types';
 
 @Controller('auth')
 export class AuthController {
@@ -54,10 +55,12 @@ export class AuthController {
   }
 
   @HttpCode(204)
-  @UseGuards(AuthGuard)
   @Post('/refresh-token')
   async refreshToken(@Req() req: Request, @Res() res: Response) {
-    const accessToken = await this.authService.refreshToken(req.user!);
+    const { refreshToken } = req.cookies as TAuthCookies;
+    const accessToken = await this.authService.refreshToken(
+      refreshToken ?? null,
+    );
     this.cookiesService.setAccessTokenCookie(res, accessToken);
     res.end();
   }
@@ -67,7 +70,7 @@ export class AuthController {
   @Post('/logout')
   async logout(@Req() req: Request, @Res() res: Response) {
     await this.authService.logout(
-      req.user!.sub,
+      req.user.sub,
       req.headers['user-agent'] ?? '',
     );
     this.cookiesService.setAccessTokenCookie(res, '', { maxAge: 0 });
@@ -79,7 +82,7 @@ export class AuthController {
   @Post('/logout-all')
   @UseGuards(AuthGuard)
   async logoutAll(@Req() req: Request, @Res() res: Response) {
-    await this.authService.logoutAll(req.user!.sub);
+    await this.authService.logoutAll(req.user.sub);
     this.cookiesService.setAccessTokenCookie(res, '', { maxAge: 0 });
     this.cookiesService.setRefreshTokenCookie(res, '', { maxAge: 0 });
     res.end();

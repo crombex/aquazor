@@ -1,11 +1,12 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { RegisterUserDTO } from '../users/dto/register-user.dto';
 import { Roles, TUserEntityMapped } from '../users/users.types';
-import { TRegisterData, TUserInRequest } from './auth.types';
+import { TRegisterData } from './auth.types';
 import { hash, compare } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
@@ -13,6 +14,7 @@ import { TokensService } from '../tokens/tokens.service';
 import { SessionsService } from '../sessions/sessions.service';
 import { LoginUserDTO } from './dto/login.dto';
 import { UserEntity } from '../users/users.entity';
+import { TRefreshTokenBody } from '../tokens/tokens.types';
 
 @Injectable()
 export class AuthService {
@@ -34,15 +36,19 @@ export class AuthService {
     let userWithThisEmail: TUserEntityMapped | null,
       userWithThisNickname: TUserEntityMapped | null;
     try {
-      userWithThisEmail = await this.usersService.findOneByEmail(email, {includeSensitiveData: false});
-    } catch (error) {
+      userWithThisEmail = await this.usersService.findOneByEmail(email, {
+        includeSensitiveData: false,
+      });
+    } catch {
       userWithThisEmail = null;
     }
 
     try {
-      userWithThisNickname =
-        await this.usersService.findOneByNickname(nickname, {includeSensitiveData: false});
-    } catch (error) {
+      userWithThisNickname = await this.usersService.findOneByNickname(
+        nickname,
+        { includeSensitiveData: false },
+      );
+    } catch {
       userWithThisNickname = null;
     }
 
@@ -80,15 +86,17 @@ export class AuthService {
   async login({ emailOrNickname, password }: LoginUserDTO, userDevice: string) {
     let foundUser: UserEntity | null;
     try {
-      foundUser =
-        await this.usersService.findOneByEmailOrNickname(emailOrNickname, {includeSensitiveData: true}) as UserEntity;
-    } catch (error) {
+      foundUser = (await this.usersService.findOneByEmailOrNickname(
+        emailOrNickname,
+        { includeSensitiveData: true },
+      )) as UserEntity;
+    } catch {
       foundUser = null;
     }
 
     const passwordToCompare = foundUser
       ? foundUser.passwordHash
-      : '\$2b\$15\$abcdefghijklmnopqrstuvwx';
+      : '$2b$15$abcdefghijklmnopqrstuvwx';
     const compareResult = await compare(password, passwordToCompare);
     if (!foundUser || !compareResult) {
       throw new UnauthorizedException('Wrong email/nickname or password');
@@ -122,12 +130,24 @@ export class AuthService {
     };
   }
 
-  async refreshToken(user: TUserInRequest) {
-    await this.sessionsService.findSession(user.sid)
-    const foundUser = (await this.usersService.findOneById(user.sub))!;
+  async refreshToken(refreshToken: string | null) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('Authorization cookie is missing');
+    }
+    const decodedToken =
+      this.tokensService.verifyToken<TRefreshTokenBody>(refreshToken)!;
+    await this.sessionsService.findSession(decodedToken.sid);
+    const foundUser = (await this.usersService.findOneById(decodedToken.sub, {
+      includeSensitiveData: true,
+    })) as UserEntity;
+    if (foundUser.isBlocked) {
+      throw new ForbiddenException('User with this id is blocked');
+    } else if (foundUser.isDeleted) {
+      throw new ForbiddenException('User with this id was deleted');
+    }
     const newAccessToken = this.tokensService.generateAccessToken({
-      userId: user.sub,
-      userSessionId: user.sid,
+      userId: decodedToken.sub,
+      userSessionId: decodedToken.sid,
       roles: foundUser.roles,
     });
     return newAccessToken;

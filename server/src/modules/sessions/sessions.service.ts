@@ -32,23 +32,23 @@ export class SessionsService {
   async findSession(sid: string) {
     const session = await this.sessionsRepository.findSession(sid);
     if (session) {
-      const mappedSession = mapKeysToCamelCase<SessionEntity>(session)
+      const mappedSession = mapKeysToCamelCase<SessionEntity>(session);
       if (new Date(mappedSession.expiredAt) > new Date()) {
-        return mappedSession
+        return mappedSession;
       } else {
-        await this.sessionsRepository.removeSessionById(mappedSession.id)
-        throw new UnauthorizedException('Session expired')
+        await this.sessionsRepository.removeSessionById(mappedSession.id);
+        throw new UnauthorizedException('Session expired');
       }
     } else {
-      throw new UnauthorizedException('Session not found')
+      throw new UnauthorizedException('Session not found');
     }
   }
 
   async removeSession(userId: string, userDevice: string) {
-    this.sessionsRepository.removeSession(userId, userDevice)
-  }    
+    await this.sessionsRepository.removeSession(userId, userDevice);
+  }
 
   async removeAllSessions(userId: string) {
-    this.sessionsRepository.removeAllSessions(userId)
+    await this.sessionsRepository.removeAllSessions(userId);
   }
 }

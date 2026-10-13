@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { readdirSync, readFileSync } from 'fs';
 import path from 'path';
-import 'dotenv/config'
+import 'dotenv/config';
 
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
@@ -14,30 +14,31 @@ const pool = new Pool({
 async function runSeeding() {
   console.log('Reading seeds path...');
 
-  const filePaths = readdirSync(path.resolve(__dirname, '../seeds')).sort().map(filename => {
-    return path.resolve(__dirname, '../', `seeds/${filename}`)
-  });
+  const filePaths = readdirSync(path.resolve(__dirname, '../seeds'))
+    .sort()
+    .map((filename) => {
+      return path.resolve(__dirname, '../', `seeds/${filename}`);
+    });
   const client = await pool.connect();
 
   try {
     await client.query('BEGIN');
-    
+
     for (const filePath of filePaths) {
-      const fileDataSQL = readFileSync(filePath, {encoding: 'utf-8'})
-      console.log(`Executing ${path.basename(filePath)} SQL script...`)
-      await client.query(fileDataSQL)
+      const fileDataSQL = readFileSync(filePath, { encoding: 'utf-8' });
+      console.log(`Executing ${path.basename(filePath)} SQL script...`);
+      await client.query(fileDataSQL);
     }
 
     await client.query('COMMIT');
-
-  } catch (error){
+  } catch (error) {
     await client.query('ROLLBACK');
     console.log('Server can not execute SQL scripts');
-    console.log('Error: ', error)
+    console.log('Error: ', error);
   } finally {
     client.release();
     await pool.end();
   }
 }
 
-runSeeding();
+runSeeding(); // eslint-disable-line @typescript-eslint/no-floating-promises

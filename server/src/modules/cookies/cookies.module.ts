@@ -3,6 +3,6 @@ import { CookiesService } from './cookies.service';
 
 @Module({
   providers: [CookiesService],
-  exports: [CookiesService]
+  exports: [CookiesService],
 })
 export class CookiesModule {}

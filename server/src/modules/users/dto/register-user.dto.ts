@@ -4,7 +4,7 @@ import {
   MinLength,
   MaxLength,
   Length,
-  IsNotEmpty
+  IsNotEmpty,
 } from 'class-validator';
 
 export class RegisterUserDTO {

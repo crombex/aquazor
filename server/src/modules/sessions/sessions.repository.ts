@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { Inject, Injectable } from '@nestjs/common';
 import { DB_POOL } from '../database/types';
-import { IAuthSessionInDatabase, ICreateAuthSession } from './sessions.types'
+import { IAuthSessionInDatabase, ICreateAuthSession } from './sessions.types';
 
 @Injectable()
 export class SessionsRepository {
@@ -24,7 +24,7 @@ export class SessionsRepository {
       `SELECT * FROM user_sessions WHERE id = $1`,
       [sid],
     );
-    return session.rows.length > 0 ? session.rows[0] : null
+    return session.rows.length > 0 ? session.rows[0] : null;
   }
 
   async removeSession(userId: string, userDevice: string) {
@@ -35,10 +35,7 @@ export class SessionsRepository {
   }
 
   async removeSessionById(id: string) {
-      await this.pool.query(
-        `DELETE FROM user_sessions WHERE id = $1`,
-        [id],
-      );
+    await this.pool.query(`DELETE FROM user_sessions WHERE id = $1`, [id]);
   }
 
   async removeAllSessions(userId: string) {
