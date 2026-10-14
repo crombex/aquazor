@@ -1,4 +1,4 @@
-CREATE TABLE fishermans (
+CREATE TABLE fishermen (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- уникальный идентификатор рыбака
   name VARCHAR(64) NOT NULL UNIQUE, -- имя рыбака
   age SMALLINT NOT NULL, -- возраст рыбака
