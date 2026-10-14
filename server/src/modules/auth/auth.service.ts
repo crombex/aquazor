@@ -30,7 +30,13 @@ export class AuthService {
   }
 
   async register(
-    { email, password, nickname, birthdate }: RegisterUserDTO,
+    {
+      email,
+      password,
+      nickname,
+      birthdate,
+      avatarUrl,
+    }: RegisterUserDTO & { avatarUrl?: string },
     userDevice?: string,
   ) {
     let userWithThisEmail: TUserEntityMapped | null,
@@ -61,6 +67,7 @@ export class AuthService {
     }
 
     const updatedUserInfo: TRegisterData = {
+      avatarUrl,
       email,
       nickname,
       birthdate,

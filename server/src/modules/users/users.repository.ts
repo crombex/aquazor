@@ -10,7 +10,7 @@ export class UsersRepository {
 
   async createUser(accountInfo: TRegisterData) {
     const client = await this.pool.connect();
-    const { passwordHash, email, birthdate, nickname } = accountInfo;
+    const { passwordHash, email, birthdate, nickname, avatarUrl } = accountInfo;
     let accountUUID: string;
 
     try {
@@ -18,9 +18,9 @@ export class UsersRepository {
       accountUUID = (
         await client.query<{ id: string }>(
           `INSERT INTO 
-            users (password_hash, email, birthdate, nickname)
-          VALUES ($1, $2, $3, $4) RETURNING id;`,
-          [passwordHash, email, birthdate, nickname],
+            users (password_hash, email, birthdate, nickname, avatar_url)
+          VALUES ($1, $2, $3, $4, $5) RETURNING id;`,
+          [passwordHash, email, birthdate, nickname, avatarUrl],
         )
       ).rows[0].id;
       await client.query('COMMIT');

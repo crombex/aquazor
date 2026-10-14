@@ -3,12 +3,13 @@ import { Roles } from '../users/users.types';
 
 export interface TUserInRequest {
   sub: string;
-  roles?: Roles[];
+  roles: Roles[];
   sid: string;
 }
 
 export type TRegisterData = Omit<RegisterUserDTO, 'password'> & {
   passwordHash: string;
+  avatarUrl?: string;
 };
 
 export type TLoginData = {

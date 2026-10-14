@@ -6,6 +6,8 @@ import {
   Res,
   HttpCode,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { RegisterUserDTO } from '../users/dto/register-user.dto';
 import { AuthService } from './auth.service';
@@ -14,23 +16,36 @@ import { LoginUserDTO } from './dto/login.dto';
 import { CookiesService } from '../cookies/cookies.service';
 import { AuthGuard } from '../guards/auth.guard';
 import { TAuthCookies } from '../cookies/cookie.types';
+import type { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ParseImagePipe } from '../../common/pipes/images.pipe';
+import { FilesService } from '../files/files.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private cookiesService: CookiesService,
+    private filesService: FilesService,
   ) {}
 
   @HttpCode(204)
   @Post('/register')
+  @UseInterceptors(FileInterceptor('avatar', {}))
   async register(
     @Body() userInfo: RegisterUserDTO,
     @Res() res: Response,
     @Req() req: Request,
+    @UploadedFile(ParseImagePipe) avatar?: Express.Multer.File,
   ) {
+    let avatarUrl: string | undefined;
+    if (avatar) {
+      avatarUrl = await this.filesService.saveImageFile(avatar, {
+        type: 'avatar',
+      });
+    }
     const { accessToken, refreshToken } = await this.authService.register(
-      userInfo,
+      { ...userInfo, avatarUrl: avatarUrl },
       req.headers['user-agent'],
     );
     this.cookiesService.setAccessTokenCookie(res, accessToken);
