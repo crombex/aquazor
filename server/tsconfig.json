@@ -12,8 +12,6 @@
     "allowSyntheticDefaultImports": true,
     "target": "esnext",
     "sourceMap": true,
-    "baseUrl": "./",
-    "ignoreDeprecations": "6.0",
     "outDir": "./dist",
     "incremental": true,
     "skipLibCheck": true,

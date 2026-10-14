@@ -52,13 +52,14 @@ export class AuthService {
       userWithThisNickname = null;
     }
 
+    const hashedPassword = await hash(password, this.bcryptHashRounds);
+
     if (userWithThisEmail !== null) {
       throw new ConflictException('This email address is already taken');
     } else if (userWithThisNickname !== null) {
       throw new ConflictException('This nickname is already taken');
     }
 
-    const hashedPassword = await hash(password, this.bcryptHashRounds);
     const updatedUserInfo: TRegisterData = {
       email,
       nickname,
@@ -103,6 +104,12 @@ export class AuthService {
     }
     if (!userDevice) {
       throw new UnauthorizedException('Header "User-Agent" needed');
+    }
+    if (foundUser.isDeleted) {
+      throw new ForbiddenException('User with this id was deleted');
+    }
+    if (foundUser.isBlocked) {
+      throw new ForbiddenException('User with this id is blocked');
     }
 
     /**
