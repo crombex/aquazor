@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { SessionsRepository } from './sessions.repository';
 import { ConfigService } from '@nestjs/config';
-import { addStringTime } from '../../utils/date-and-time';
+import { addStringTime } from '../../common/utils/date-and-time';
 import ms from 'ms';
-import { mapKeysToCamelCase } from '../../utils/change-case';
+import { mapKeysToCamelCase } from '../../common/utils/change-case';
 import { SessionEntity } from './sessions.entity';
 
 @Injectable()

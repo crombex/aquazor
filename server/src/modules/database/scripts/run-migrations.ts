@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import { readdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { IMigration } from '../types';
-import { hashFromFile } from '../../../utils/hash-from-file';
+import { hashFromFile } from '../../../common/utils/hash-from-file';
 import 'dotenv/config';
 
 const pool = new Pool({

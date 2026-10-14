@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TRegisterData } from '../auth/auth.types';
 import { UsersRepository } from './users.repository';
-import { mapKeysToCamelCase } from '../../utils/change-case';
+import { mapKeysToCamelCase } from '../../common/utils/change-case';
 import { UserEntity } from './users.entity';
 import { TUserEntityMapped, TUserFindOptions } from './users.types';
 
