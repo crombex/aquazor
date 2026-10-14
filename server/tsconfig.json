@@ -20,7 +20,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["node", "jest", "express"]
+    "types": ["node", "jest", "express", "multer"]
   },
   "include": ["src/**/*", "test/**/*"]
 }
