@@ -1,6 +1,6 @@
 INSERT INTO locations (
   id,
-  name,
+  title,
   type,
   fertility,
   image_url,
