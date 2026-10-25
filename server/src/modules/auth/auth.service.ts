@@ -13,7 +13,7 @@ import { UsersService } from '../users/users.service';
 import { TokensService } from '../tokens/tokens.service';
 import { SessionsService } from '../sessions/sessions.service';
 import { LoginUserDTO } from './dto/login.dto';
-import { UserEntity } from '../users/users.entity';
+import { UserEntity } from '../users/users.types';
 import { TRefreshTokenBody } from '../tokens/tokens.types';
 
 @Injectable()
