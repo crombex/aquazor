@@ -27,7 +27,7 @@ export class FishService {
         return fishWithFewerData
       }
     } else {
-      throw new GoneException('This type of fish is deprecated')
+      throw new GoneException('This fish is deprecated')
     }
   }
 }

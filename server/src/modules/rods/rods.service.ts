@@ -20,17 +20,17 @@ export class RodsService {
       if (options.isFull) {
         return mappedRod;
       } else {
-        const fishWithFewerData: TRodFewData = {
+        const rodWithFewerData: TRodFewData = {
           id: mappedRod.id,
           type: mappedRod.type,
           imageUrl: mappedRod.imageUrl,
           rarity: mappedRod.rarity,
           description: mappedRod.description,
         };
-        return fishWithFewerData;
+        return rodWithFewerData;
       }
     } else {
-      throw new GoneException('This type of fish is deprecated');
+      throw new GoneException('This rod is deprecated');
     }
   }
 }
