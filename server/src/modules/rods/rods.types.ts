@@ -17,5 +17,3 @@ export type TRodFewData = Pick<
   RodEntity,
   'id' | 'type' | 'rarity' | 'description' | 'imageUrl'
 >;
-
-

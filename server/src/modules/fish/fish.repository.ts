@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { DB_POOL } from '../database/types';
 import { Inject } from '@nestjs/common';
-import {TFishInDatabase } from './fish.types';
+import { TFishInDatabase } from './fish.types';
 
 export class FishRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
@@ -25,9 +25,9 @@ export class FishRepository {
       [id],
     );
     if (query.rows.length > 0) {
-      return query.rows[0]
+      return query.rows[0];
     } else {
-      return null
+      return null;
     }
   }
 }

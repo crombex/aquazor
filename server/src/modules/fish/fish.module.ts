@@ -5,6 +5,6 @@ import { FishRepository } from './fish.repository';
 
 @Module({
   providers: [FishService, FishRepository],
-  controllers: [FishController]
+  controllers: [FishController],
 })
 export class FishModule {}

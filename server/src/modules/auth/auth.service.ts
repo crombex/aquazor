@@ -91,7 +91,10 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async login({ emailOrNickname, password }: LoginUserDTO, userDevice?: string) {
+  async login(
+    { emailOrNickname, password }: LoginUserDTO,
+    userDevice?: string,
+  ) {
     let foundUser: UserEntity | null;
     try {
       foundUser = (await this.usersService.findOneByEmailOrNickname(
@@ -119,9 +122,10 @@ export class AuthService {
     /**
      * Мы удаляем дубликаты сессий из базы, так как если пользователь почистит куки, то при повторном логине новая сессия добавится, а старая никуда не исчезнет
      */
-    await this.sessionsService.removeSessionByUserIdAndDevice(foundUser.id, userDevice ?? 'unknown');
-
-    
+    await this.sessionsService.removeSessionByUserIdAndDevice(
+      foundUser.id,
+      userDevice ?? 'unknown',
+    );
 
     const sessionId = await this.sessionsService.createSession(
       foundUser.id,

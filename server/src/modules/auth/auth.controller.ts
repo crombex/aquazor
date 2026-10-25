@@ -62,7 +62,7 @@ export class AuthController {
   ) {
     const { accessToken, refreshToken } = await this.authService.login(
       loginInfo,
-      req.headers['user-agent']
+      req.headers['user-agent'],
     );
     this.cookiesService.setAccessTokenCookie(res, accessToken);
     this.cookiesService.setRefreshTokenCookie(res, refreshToken);
@@ -84,9 +84,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('/logout')
   async logout(@Req() req: Request, @Res() res: Response) {
-    await this.authService.logout(
-      req.user.sid
-    );
+    await this.authService.logout(req.user.sid);
     this.cookiesService.setAccessTokenCookie(res, '', { maxAge: 0 });
     this.cookiesService.setRefreshTokenCookie(res, '', { maxAge: 0 });
     res.end();

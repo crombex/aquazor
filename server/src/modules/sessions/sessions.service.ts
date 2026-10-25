@@ -45,11 +45,14 @@ export class SessionsService {
   }
 
   async removeSessionByUserIdAndDevice(userId: string, userDevice: string) {
-    await this.sessionsRepository.removeSessionByUserIdAndDevice(userId, userDevice);
+    await this.sessionsRepository.removeSessionByUserIdAndDevice(
+      userId,
+      userDevice,
+    );
   }
 
   async removeSessionById(id: string) {
-    await this.sessionsRepository.removeSessionById(id)
+    await this.sessionsRepository.removeSessionById(id);
   }
 
   async removeAllSessions(userId: string) {

@@ -13,7 +13,7 @@ export class LocationsController {
   constructor(private locationsService: LocationsService) {}
 
   @Get(':id')
-  getlocationInfo(
+  getLocationInfo(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('isFull', new ParseBoolPipe({ optional: true })) isFull?: boolean,
   ) {

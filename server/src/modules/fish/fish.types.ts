@@ -13,7 +13,10 @@ export interface FishEntity {
   deprecated: boolean;
 }
 
-export type TFishInDatabase = Pick<FishEntity, 'id' | 'deprecated' | 'description' | 'rarity' | 'type'> & {
+export type TFishInDatabase = Pick<
+  FishEntity,
+  'id' | 'deprecated' | 'description' | 'rarity' | 'type'
+> & {
   max_weight: number;
   min_weight: number;
   max_length: number;
@@ -27,5 +30,3 @@ export type TFishFewData = Pick<
   FishEntity,
   'id' | 'type' | 'rarity' | 'description' | 'imageUrl'
 >;
-
-
