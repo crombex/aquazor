@@ -91,7 +91,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async login({ emailOrNickname, password }: LoginUserDTO, userDevice: string) {
+  async login({ emailOrNickname, password }: LoginUserDTO, userDevice?: string) {
     let foundUser: UserEntity | null;
     try {
       foundUser = (await this.usersService.findOneByEmailOrNickname(
@@ -109,9 +109,6 @@ export class AuthService {
     if (!foundUser || !compareResult) {
       throw new UnauthorizedException('Wrong email/nickname or password');
     }
-    if (!userDevice) {
-      throw new UnauthorizedException('Header "User-Agent" needed');
-    }
     if (foundUser.isDeleted) {
       throw new ForbiddenException('User with this id was deleted');
     }
@@ -122,11 +119,13 @@ export class AuthService {
     /**
      * Мы удаляем дубликаты сессий из базы, так как если пользователь почистит куки, то при повторном логине новая сессия добавится, а старая никуда не исчезнет
      */
-    await this.sessionsService.removeSession(foundUser.id, userDevice);
+    await this.sessionsService.removeSessionByUserIdAndDevice(foundUser.id, userDevice ?? 'unknown');
+
+    
 
     const sessionId = await this.sessionsService.createSession(
       foundUser.id,
-      userDevice,
+      userDevice ?? 'unknown',
     );
     const accessToken = this.tokensService.generateAccessToken({
       userId: foundUser.id,
@@ -167,8 +166,8 @@ export class AuthService {
     return newAccessToken;
   }
 
-  async logout(userId: string, userDevice: string) {
-    await this.sessionsService.removeSession(userId, userDevice);
+  async logout(sessionId: string) {
+    await this.sessionsService.removeSessionById(sessionId);
   }
 
   async logoutAll(userId: string) {

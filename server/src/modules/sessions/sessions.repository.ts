@@ -27,7 +27,7 @@ export class SessionsRepository {
     return session.rows.length > 0 ? session.rows[0] : null;
   }
 
-  async removeSession(userId: string, userDevice: string) {
+  async removeSessionByUserIdAndDevice(userId: string, userDevice: string) {
     await this.pool.query(
       `DELETE FROM user_sessions WHERE user_id = $1 AND device = $2`,
       [userId, userDevice],
