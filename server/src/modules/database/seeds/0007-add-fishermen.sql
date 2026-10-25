@@ -1,4 +1,4 @@
-INSERT INTO fishermans (
+INSERT INTO fishermen (
   id,
   name,
   age,
