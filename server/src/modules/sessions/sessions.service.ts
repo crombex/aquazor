@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { addStringTime } from '../../common/utils/date-and-time';
 import ms from 'ms';
 import { mapKeysToCamelCase } from '../../common/utils/change-case';
-import { SessionEntity } from './sessions.entity';
+import { SessionEntity } from './sessions.types';
 
 @Injectable()
 export class SessionsService {
