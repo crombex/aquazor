@@ -10,7 +10,7 @@ export interface RodEntity {
 }
 
 export type TRodInDatabase = Omit<RodEntity, 'imageUrl'> & {
-  image_url: number;
+  image_url: string;
 };
 
 export type TRodFewData = Pick<

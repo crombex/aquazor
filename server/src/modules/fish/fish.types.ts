@@ -20,7 +20,7 @@ export type TFishInDatabase = Pick<FishEntity, 'id' | 'deprecated' | 'descriptio
   min_length: number;
   max_chance: number;
   min_chance: number;
-  image_url: number;
+  image_url: string;
 };
 
 export type TFishFewData = Pick<
