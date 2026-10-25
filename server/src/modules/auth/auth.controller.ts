@@ -15,7 +15,7 @@ import type { Request, Response } from 'express';
 import { LoginUserDTO } from './dto/login.dto';
 import { CookiesService } from '../cookies/cookies.service';
 import { AuthGuard } from '../guards/auth.guard';
-import { TAuthCookies } from '../cookies/cookie.types';
+import { TAuthCookies } from '../cookies/cookies.types';
 import type { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ParseImagePipe } from '../../common/pipes/images.pipe';
@@ -62,7 +62,7 @@ export class AuthController {
   ) {
     const { accessToken, refreshToken } = await this.authService.login(
       loginInfo,
-      req.headers['user-agent'] ?? '',
+      req.headers['user-agent']
     );
     this.cookiesService.setAccessTokenCookie(res, accessToken);
     this.cookiesService.setRefreshTokenCookie(res, refreshToken);
@@ -85,8 +85,7 @@ export class AuthController {
   @Post('/logout')
   async logout(@Req() req: Request, @Res() res: Response) {
     await this.authService.logout(
-      req.user.sub,
-      req.headers['user-agent'] ?? '',
+      req.user.sid
     );
     this.cookiesService.setAccessTokenCookie(res, '', { maxAge: 0 });
     this.cookiesService.setRefreshTokenCookie(res, '', { maxAge: 0 });

@@ -24,8 +24,6 @@ export class AppExceptionFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server error';
 
-    response.status(status).json({
-      data: message,
-    });
+    response.status(status).json(message);
   }
 }

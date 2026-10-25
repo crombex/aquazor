@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { TAuthCookies } from '../cookies/cookie.types';
+import { TAuthCookies } from '../cookies/cookies.types';
 import { SessionsService } from '../sessions/sessions.service';
 import { TokensService } from '../tokens/tokens.service';
 import { TAccessTokenBody } from '../tokens/tokens.types';

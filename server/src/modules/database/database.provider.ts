@@ -1,8 +1,9 @@
 import { Pool } from 'pg';
 import { DB_POOL } from './types';
 import { ConfigService } from '@nestjs/config';
+import { FactoryProvider } from '@nestjs/common';
 
-export const DatabaseProvider = {
+export const DatabaseProvider: FactoryProvider = {
   provide: DB_POOL,
   inject: [ConfigService],
   useFactory: (configService: ConfigService) => {
