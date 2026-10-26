@@ -16,6 +16,9 @@ export class RodsRepository {
         image_url,
         description,
         rarity,
+        buy_price,
+        sell_price,
+        level_required,
         deprecated 
       FROM rods WHERE id = $1`,
       [id],

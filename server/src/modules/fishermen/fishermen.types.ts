@@ -6,11 +6,13 @@ export interface FishermanEntity {
   luck: number;
   avatarUrl: string;
   description: string;
+  levelRequired: number;
   deprecated: boolean;
 }
 
-export type TFishermanInDatabase = Omit<FishermanEntity, 'avatarUrl'> & {
+export type TFishermanInDatabase = Omit<FishermanEntity, 'avatarUrl' | 'levelRequired'> & {
   avatar_url: string;
+  level_required: number;
 };
 
 export type TFishermanFewData = Pick<

@@ -16,6 +16,7 @@ export class FishermenRepository {
         luck,
         description,
         avatar_url,
+        level_required,
         deprecated 
       FROM fishermen WHERE id = $1`,
       [id],

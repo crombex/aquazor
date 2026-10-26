@@ -10,6 +10,7 @@ export interface FishEntity {
   imageUrl: string;
   description: string;
   rarity: string;
+  minSellPrice: number;
   deprecated: boolean;
 }
 
@@ -24,6 +25,7 @@ export type TFishInDatabase = Pick<
   max_chance: number;
   min_chance: number;
   image_url: string;
+  min_sell_price: number;
 };
 
 export type TFishFewData = Pick<

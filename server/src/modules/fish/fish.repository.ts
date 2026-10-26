@@ -20,6 +20,7 @@ export class FishRepository {
         image_url,
         description,
         rarity,
+        min_sell_price,
         deprecated 
       FROM fish WHERE id = $1`,
       [id],
