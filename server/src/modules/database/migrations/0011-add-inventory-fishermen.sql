@@ -5,5 +5,5 @@ CREATE TABLE inventory_fishermans (
   user_id UUID NOT NULL REFERENCES users(id), -- идентификатор игрока, который владеет рыбаком
   started_at TIMESTAMPTZ, -- время начала использования рыбака
   finished_at TIMESTAMPTZ, -- время окончания использования рыбака
-  energy SMALLINT, -- уровень энергии рыбака
+  energy SMALLINT -- уровень энергии рыбака
 )
