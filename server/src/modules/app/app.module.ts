@@ -7,6 +7,7 @@ import { FishModule } from '../fish/fish.module';
 import { RodsModule } from '../rods/rods.module';
 import { LocationsModule } from '../locations/locations.module';
 import { FishermenModule } from '../fishermen/fishermen.module';
+import { BaitsModule } from '../baits/baits.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { FishermenModule } from '../fishermen/fishermen.module';
     RodsModule,
     LocationsModule,
     FishermenModule,
+    BaitsModule
   ],
 })
 export class AppModule {}
