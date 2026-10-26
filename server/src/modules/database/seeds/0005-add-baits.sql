@@ -6,7 +6,8 @@ INSERT INTO baits (
   description,
   efficiency,
   buy_price,
-  sell_price
+  sell_price,
+  level_required
 ) VALUES 
 
 -- COMMON BAITS
@@ -19,7 +20,8 @@ INSERT INTO baits (
   'обычный червячок, на которого рыбачили все мы',
   0.13,
   10,
-  5
+  5,
+  0
 ),
 
 -- UNCOMMON BAITS
@@ -32,7 +34,8 @@ INSERT INTO baits (
   'крошечный червячок, который живет в воде и является любимой приманкой для многих рыб',
   0.21,
   25,
-  13
+  13,
+  3
 ),
 
 -- RARE BAITS
@@ -45,7 +48,8 @@ INSERT INTO baits (
   'зерно кукурузы, которое привлекает многих рыб, особенно карпов',
   0.35,
   40,
-  20
+  20,
+  8
 ),
 
 -- EPIC BAITS
@@ -58,7 +62,8 @@ INSERT INTO baits (
   'живой лосось, который является редкой и дорогой приманкой для крупных хищных рыб',
   0.55,
   90,
-  45
+  45,
+  15
 )
 
 -- LEGENDARY BAITS

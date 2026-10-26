@@ -7,5 +7,6 @@ CREATE TABLE baits (
   efficiency DECIMAL(3, 1), -- эффективность приманки
   buy_price INT NOT NULL,
   sell_price INT NOT NULL,
+  level_required SMALLINT NOT NULL DEFAULT 0,
   deprecated BOOLEAN NOT NULL DEFAULT FALSE -- флаг, указывающий на то, что приманка больше не используется в игре
 )
