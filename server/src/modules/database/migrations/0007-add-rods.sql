@@ -6,5 +6,8 @@ CREATE TABLE rods (
   type VARCHAR(64) UNIQUE NOT NULL, -- например 'деревянная удочка'
   rarity rarity_enum NOT NULL DEFAULT 'common', -- редкость удочки, влияет на шанс поймать рыбу
   power DECIMAL(3, 1) NOT NULL, -- сила удочки, влияет на шанс поймать рыбу
+  buy_price INT NOT NULL,
+  sell_price INT NOT NULL,
+  level_required SMALLINT NOT NULL DEFAULT 0,
   deprecated BOOLEAN NOT NULL DEFAULT FALSE -- флаг, указывающий на то, что удочка больше не используется в игре
 )

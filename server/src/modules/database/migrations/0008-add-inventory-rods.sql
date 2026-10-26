@@ -4,5 +4,4 @@ CREATE TABLE inventory_rods (
   rod_id UUID REFERENCES rods(id) NOT NULL, -- идентификатор удочки, которая находится в инвентаре
   started_at TIMESTAMPTZ, -- дата и время начала использования удочки
   finished_at TIMESTAMPTZ, -- дата и время окончания использования удочки
-  deprecated BOOLEAN NOT NULL DEFAULT FALSE -- флаг, указывающий на то, что удочка больше не используется в игре
 )

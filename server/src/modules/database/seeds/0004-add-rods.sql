@@ -6,6 +6,9 @@ INSERT INTO rods (
   rarity,
   image_url,
   description
+  buy_price,
+  sell_price,
+  level_required
 ) VALUES
 
 -- COMMON RODS
@@ -17,7 +20,10 @@ INSERT INTO rods (
   0.23,
   'common',
   'public/images/rods/bambukovaya-udochka.png',
-  'Простая удочка для начинающих рыбаков, подходит для ловли мелкой рыбы.'
+  'Простая удочка для начинающих рыбаков, подходит для ловли мелкой рыбы.',
+  100,
+  50,
+  1
 ),
 
 -- UNCOMMON RODS
@@ -28,7 +34,10 @@ INSERT INTO rods (
   0.33,
   'uncommon',
   'public/images/rods/steklovolokonnaya-udochka.png',
-  'Интересная на вид удочка с хорошим потенциалом.'
+  'Интересная на вид удочка с хорошим потенциалом.',
+  500,
+  250,
+  3
 ),
 
 -- RARE RODS
@@ -44,5 +53,8 @@ INSERT INTO rods (
   0.89,
   'legendary',
   'public/images/rods/udochka-tsarya-rybaka.png',
-  'Артефакт из старинной легенды, по преданию не знает промаха.'
+  'Артефакт из старинной легенды, по преданию не знает промаха.',
+  10000,
+  5000,
+  50
 )

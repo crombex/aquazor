@@ -6,5 +6,4 @@ CREATE TABLE inventory_fishermans (
   started_at TIMESTAMPTZ, -- время начала использования рыбака
   finished_at TIMESTAMPTZ, -- время окончания использования рыбака
   energy SMALLINT, -- уровень энергии рыбака
-  deprecated BOOLEAN NOT NULL DEFAULT FALSE -- флаг, указывающий на то, что рыбак больше не используется в игре
 )

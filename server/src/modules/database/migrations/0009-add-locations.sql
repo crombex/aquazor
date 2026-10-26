@@ -5,6 +5,6 @@ CREATE TABLE locations (
   fertility DECIMAL(3, 1) NOT NULL, -- плодородность локации
   image_url TEXT NOT NULL, -- ссылка на изображение локации например 'public/images/locations/baykal.png'
   description TEXT, -- краткое описание локации 
-  level_required SMALLINT NOT NULL, -- минимальный уровень игрока, необходимый для рыбалки в этой локации
+  level_required SMALLINT NOT NULL DEFAULT 0, -- минимальный уровень игрока, необходимый для рыбалки в этой локации
   deprecated BOOLEAN NOT NULL DEFAULT FALSE -- флаг, указывающий на то, что локация больше не используется в игре
 )

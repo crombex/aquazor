@@ -11,5 +11,6 @@ CREATE TABLE fish (
   image_url TEXT NOT NULL, -- ссылка на изображение рыбы, например 'public/images/fish/chyka-obiknpvennaya.png'
   description TEXT, -- краткое описание про рыбу, её повадки, где водится и т.д.
   rarity rarity_enum NOT NULL DEFAULT 'common', -- рекость рыбы, влияет на шанс поймать её
+  min_sell_price INT NOT NULL,
   deprecated BOOLEAN NOT NULL DEFAULT FALSE -- флаг, указывающий на то, что рыба больше не водится в игре и не может быть поймана
 )

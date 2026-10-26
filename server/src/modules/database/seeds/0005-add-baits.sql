@@ -4,7 +4,9 @@ INSERT INTO baits (
   rarity,
   image_url,
   description,
-  efficiency
+  efficiency,
+  buy_price,
+  sell_price
 ) VALUES 
 
 -- COMMON BAITS
@@ -15,7 +17,9 @@ INSERT INTO baits (
   'common',
   'public/images/baits/cherv-dozhdevoi.png',
   'обычный червячок, на которого рыбачили все мы',
-  0.13
+  0.13,
+  10,
+  5
 ),
 
 -- UNCOMMON BAITS
@@ -26,7 +30,9 @@ INSERT INTO baits (
   'uncommon',
   'public/images/baits/motyl.png',
   'крошечный червячок, который живет в воде и является любимой приманкой для многих рыб',
-  0.21
+  0.21,
+  25,
+  13
 ),
 
 -- RARE BAITS
@@ -37,7 +43,9 @@ INSERT INTO baits (
   'rare',
   'public/images/baits/kukuruznoe-zerno.png',
   'зерно кукурузы, которое привлекает многих рыб, особенно карпов',
-  0.35
+  0.35,
+  40,
+  20
 ),
 
 -- EPIC BAITS
@@ -48,7 +56,9 @@ INSERT INTO baits (
   'epic',
   'public/images/baits/zhivoy-losos.png',
   'живой лосось, который является редкой и дорогой приманкой для крупных хищных рыб',
-  0.55
+  0.55,
+  90,
+  45
 )
 
 -- LEGENDARY BAITS

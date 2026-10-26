@@ -9,6 +9,7 @@ INSERT INTO fish (
   min_chance,
   max_chance,
   image_url,
+  min_sell_price,
   description
 ) VALUES
 
@@ -25,6 +26,7 @@ INSERT INTO fish (
   0.55,
   0.73,
   'public/images/fish/karas-obyknovennyy.png',
+  20,
   'Пресноводная рыба, обитает в тихих заводях и прудах, неприхотлива к качеству воды.'
 ), 
 (
@@ -38,6 +40,7 @@ INSERT INTO fish (
   0.57,
   0.77,
   'public/images/fish/plotva.png',
+  23,
   'Стайная рыба рек и озёр, активна круглый год.'
 ),
 (
@@ -51,6 +54,7 @@ INSERT INTO fish (
   0.50,
   0.80,
   'public/images/fish/okun-rechnoy.png',
+  22,
   'Хищник, держится у коряг и водной растительности.'
 ),
 (
@@ -64,6 +68,7 @@ INSERT INTO fish (
   0.67,
   0.74,
   'public/images/fish/ukleyka.png',
+  24,
   'Мелкая стайная рыбка, часто держится у поверхности воды.'
 ),
 (
@@ -77,6 +82,7 @@ INSERT INTO fish (
   0.60,
   0.80,
   'public/images/fish/peskar.png',
+  15,
   'Донная рыба, предпочитает песчаное дно рек.'
 ),
 
@@ -93,6 +99,7 @@ INSERT INTO fish (
   0.27,
   0.40,
   'public/images/fish/schuka-obyknovennaya.png',
+  40,
   'Хищница, засадный охотник, держится у коряг и травы.'
 ),
 (
@@ -106,6 +113,7 @@ INSERT INTO fish (
   0.28,
   0.44,
   'public/images/fish/lesch.png',
+  41,
   'Держится стаями на глубине, любит илистое дно.'
 ),
 (
@@ -119,6 +127,7 @@ INSERT INTO fish (
   0.25,
   0.39,
   'public/images/fish/sudak.png',
+  43,
   'Хищная рыба, предпочитает чистую воду с твёрдым дном.'
 ),
 (
@@ -132,6 +141,7 @@ INSERT INTO fish (
   0.30,
   0.42,
   'public/images/fish/golavl.png',
+  45,
   'Осторожная рыба, держится у перекатов и обрывистых берегов.'
 ),
 (
@@ -145,6 +155,7 @@ INSERT INTO fish (
   0.25,
   0.44,
   'public/images/fish/yaz.png',
+  42,
   'Держится в реках со средним течением, питается растительной и животной пищей.'
 ),
 
@@ -161,6 +172,7 @@ INSERT INTO fish (
   0.1,
   0.24,
   'public/images/fish/som-obyknovennyy.png',
+  89,
   'Крупный ночной хищник, обитает в глубоких ямах.'
 ),
 (
@@ -174,6 +186,7 @@ INSERT INTO fish (
   0.09,
   0.21,
   'public/images/fish/forel-raduzhnaya.png',
+  92,
   'Холодолюбивая рыба, чувствительна к чистоте воды.'
 ),
 (
@@ -187,6 +200,7 @@ INSERT INTO fish (
   0.09,
   0.17,
   'public/images/fish/harius.png',
+  90,
   'Обитает в быстрых холодных реках, отличается ярким спинным плавником.'
 ),
 (
@@ -200,6 +214,7 @@ INSERT INTO fish (
   0.1,
   0.20,
   'public/images/fish/taymen.png',
+  91,
   'Крупный лосось сибирских рек, вид под угрозой исчезновения.'
 ),
 (
@@ -213,6 +228,7 @@ INSERT INTO fish (
   0.09,
   0.13,
   'public/images/fish/osetr-russkiy.png',
+  100,
   'Ценная промысловая рыба, занесена в Красную книгу.'
 ),
 
@@ -229,6 +245,7 @@ INSERT INTO fish (
   0.007,
   0.01,
   'public/images/fish/beluga.png',
+  230,
   'Крупнейшая пресноводная рыба, обитает в бассейне Каспийского моря.'
 ),
 (
@@ -242,6 +259,7 @@ INSERT INTO fish (
   0.004,
   0.009,
   'public/images/fish/kaluga.png',
+  244,
   'Дальневосточный родственник белуги, обитает в Амуре.'
 ),
 (
@@ -255,6 +273,7 @@ INSERT INTO fish (
   0.004,
   0.008,
   'public/images/fish/latimeria.png',
+  238,
   'Живое ископаемое, считалось вымершим более 60 миллионов лет назад.'
 ),
 (
@@ -268,6 +287,7 @@ INSERT INTO fish (
   0.003,
   0.005,
   'public/images/fish/goluboy-marlin.png',
+  239,
   'Океанический хищник, один из самых быстрых обитателей моря.'
 ),
 (
@@ -281,6 +301,7 @@ INSERT INTO fish (
   0.003,
   0.0038,
   'public/images/fish/gigantskiy-som-mekonga.png',
+  250,
   'Один из крупнейших пресноводных видов в мире, обитает в реке Меконг.'
 ),
 
@@ -297,6 +318,7 @@ INSERT INTO fish (
   0.000016,
   0.000019,
   'public/images/fish/zolotaya-rybka.png',
+  999,
   'Волшебная рыба из сказки, способна исполнить одно желание удачливому рыбаку.'
 ),
 (
@@ -310,6 +332,7 @@ INSERT INTO fish (
   0.000012,
   0.000014,
   'public/images/fish/tsar-ryba.png',
+  999,
   'Легендарная рыба сибирских рек, о встрече с которой слагают легенды.'
 ),
 (
@@ -323,6 +346,7 @@ INSERT INTO fish (
   0.000011,
   0.000013,
   'public/images/fish/kraken.png',
+  999,
   'Морское чудовище из северных легенд, топит корабли своими щупальцами.'
 ),
 (
@@ -336,6 +360,7 @@ INSERT INTO fish (
   0.000012,
   0.000013,
   'public/images/fish/leviafan.png',
+  999,
   'Библейское чудовище из морских пучин, символ первобытного хаоса.'
 ),
 (
@@ -349,5 +374,6 @@ INSERT INTO fish (
   0.000011,
   0.0000114,
   'public/images/fish/chudo-yudo-ryba-kit.png',
+  1000,
   'Сказочный кит-остров из русского фольклора, на спине которого можно построить деревню.'
 )

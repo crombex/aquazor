@@ -3,5 +3,4 @@ CREATE TABLE inventory_baits (
   bait_id UUID NOT NULL REFERENCES baits(id), -- идентификатор приманки, которая находится в инвентаре
   user_id UUID NOT NULL REFERENCES users(id), -- идентификатор игрока, которому принадлежит приманка
   quantity INT NOT NULL, -- количество приманки в инвентаре
-  deprecated BOOLEAN NOT NULL DEFAULT FALSE -- флаг, указывающий на то, что приманка больше не используется в игре
 )

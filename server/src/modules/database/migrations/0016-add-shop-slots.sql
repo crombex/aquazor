@@ -3,5 +3,4 @@ CREATE TABLE shop_slots (
   item UUID NOT NULL,
   quantity INT NOT NULL,
   price INT NOT NULL,
-  deprecated BOOLEAN NOT NULL DEFAULT FALSE
 )
