@@ -5,7 +5,7 @@ INSERT INTO rods (
   power,
   rarity,
   image_url,
-  description
+  description,
   buy_price,
   sell_price,
   level_required
