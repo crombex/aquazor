@@ -112,12 +112,7 @@ export class AuthService {
     if (!foundUser || !compareResult) {
       throw new UnauthorizedException('Wrong email/nickname or password');
     }
-    if (foundUser.isDeleted) {
-      throw new ForbiddenException('User with this id was deleted');
-    }
-    if (foundUser.isBlocked) {
-      throw new ForbiddenException('User with this id is blocked');
-    }
+    UsersService.checkUserValidity(foundUser)
 
     /**
      * Мы удаляем дубликаты сессий из базы, так как если пользователь почистит куки, то при повторном логине новая сессия добавится, а старая никуда не исчезнет
