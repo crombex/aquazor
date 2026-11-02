@@ -6,8 +6,8 @@ INSERT INTO fish (
   min_length,
   max_length,
   rarity,
-  min_chance,
-  max_chance,
+  min_probability,
+  max_probability,
   image_url,
   min_sell_price,
   description

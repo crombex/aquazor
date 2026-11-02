@@ -7,5 +7,5 @@ CREATE TABLE fishermen (
   avatar_url TEXT NOT NULL, -- ссылка на изображение рыбака
   description TEXT, -- краткое описание рыбака
   level_required SMALLINT NOT NULL DEFAULT 0,
-  deprecated BOOLEAN NOT NULL DEFAULT FALSE -- флаг, указывающий на то, что рыбак больше не используется в игре
+  unavailable BOOLEAN NOT NULL DEFAULT FALSE -- флаг, указывающий на то, что рыбак больше не используется в игре
 )
