@@ -1,5 +1,9 @@
-import { DB_POOL } from '../database/types';
-import { Inject, Injectable } from '@nestjs/common';
+import { DB_POOL } from '../database/database.types';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Pool } from 'pg';
 import { TRegisterData } from '../auth/auth.types';
 import { TUserInDatabase } from './users.types';
@@ -52,6 +56,26 @@ export class UsersRepository {
       return result.rows[0];
     } else {
       return null;
+    }
+  }
+
+  async changeCoinsAmount(userId: string, amount: number) {
+    const newCoinsAmount = await this.pool.query<{ coins: number }>(
+      `UPDATE users SET coins = coins + $1 WHERE id = $2 AND (coins + $1 >= 0) RETURNING coins`,
+      [amount, userId],
+    );
+    if (newCoinsAmount.rows.length === 0) {
+      throw new InternalServerErrorException('Server can not respond');
+    }
+  }
+
+  async changeExperienceAmount(userId: string, amount: number) {
+    const newExperienceAmount = await this.pool.query<{ coins: number }>(
+      `UPDATE users SET experience = experience + $1 WHERE id = $2 AND (experience + $1 >= 0) RETURNING experience`,
+      [amount, userId],
+    );
+    if (newExperienceAmount.rows.length === 0) {
+      throw new InternalServerErrorException('Server can not respond');
     }
   }
 }
