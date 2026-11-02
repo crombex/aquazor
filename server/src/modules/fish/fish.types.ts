@@ -5,30 +5,30 @@ export interface FishEntity {
   minWeight: number;
   maxLength: number;
   minLength: number;
-  maxChance: number;
-  minChance: number;
+  maxProbability: number;
+  minProbability: number;
   imageUrl: string;
   description: string;
   rarity: string;
   minSellPrice: number;
-  deprecated: boolean;
+  unavailable: boolean;
 }
 
 export type TFishInDatabase = Pick<
   FishEntity,
-  'id' | 'deprecated' | 'description' | 'rarity' | 'type'
+  'id' | 'unavailable' | 'description' | 'rarity' | 'type'
 > & {
   max_weight: number;
   min_weight: number;
   max_length: number;
   min_length: number;
-  max_chance: number;
-  min_chance: number;
+  max_probability: number;
+  min_probability: number;
   image_url: string;
   min_sell_price: number;
 };
 
-export type TFishFewData = Pick<
+export type TFishForResponseData = Omit<
   FishEntity,
-  'id' | 'type' | 'rarity' | 'description' | 'imageUrl'
+  'maxProbability' | 'minProbability'
 >;

@@ -2,9 +2,7 @@ import {
   Controller,
   Get,
   Param,
-  ParseBoolPipe,
   ParseUUIDPipe,
-  Query,
 } from '@nestjs/common';
 import { LocationsService } from './locations.service';
 
@@ -13,10 +11,9 @@ export class LocationsController {
   constructor(private locationsService: LocationsService) {}
 
   @Get(':id')
-  getLocationInfo(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Query('isFull', new ParseBoolPipe({ optional: true })) isFull?: boolean,
+  getLocation(
+    @Param('id', ParseUUIDPipe) id: string
   ) {
-    return this.locationsService.getLocationInfo(id, { isFull });
+    return this.locationsService.findOneById(id);
   }
 }

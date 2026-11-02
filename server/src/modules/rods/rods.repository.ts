@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { DB_POOL } from '../database/types';
+import { DB_POOL } from '../database/database.types';
 import { Inject } from '@nestjs/common';
 import { TRodInDatabase } from './rods.types';
 
@@ -19,7 +19,7 @@ export class RodsRepository {
         buy_price,
         sell_price,
         level_required,
-        deprecated 
+        unavailable 
       FROM rods WHERE id = $1`,
       [id],
     );

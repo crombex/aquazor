@@ -6,20 +6,18 @@ export interface RodEntity {
   imageUrl: string;
   description: string;
   rarity: string;
-  deprecated: boolean;
+  unavailable: boolean;
   buyPrice: number;
   sellPrice: number;
   levelRequired: number;
 }
 
-export type TRodInDatabase = Omit<RodEntity, 'imageUrl' | 'buyPrice' | 'sellPrice' | 'levelRequired'> & {
+export type TRodInDatabase = Omit<
+  RodEntity,
+  'imageUrl' | 'buyPrice' | 'sellPrice' | 'levelRequired'
+> & {
   image_url: string;
   buy_price: number;
   sell_price: number;
   level_required: number;
 };
-
-export type TRodFewData = Pick<
-  RodEntity,
-  'id' | 'type' | 'rarity' | 'description' | 'imageUrl'
->;

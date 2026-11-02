@@ -7,15 +7,14 @@ export interface FishermanEntity {
   avatarUrl: string;
   description: string;
   levelRequired: number;
-  deprecated: boolean;
+  unavailable: boolean;
 }
 
-export type TFishermanInDatabase = Omit<FishermanEntity, 'avatarUrl' | 'levelRequired'> & {
+export type TFishermanInDatabase = Omit<
+  FishermanEntity,
+  'avatarUrl' | 'levelRequired'
+> & {
   avatar_url: string;
   level_required: number;
 };
 
-export type TFishermanFewData = Pick<
-  FishermanEntity,
-  'id' | 'name' | 'age' | 'description' | 'avatarUrl'
->;

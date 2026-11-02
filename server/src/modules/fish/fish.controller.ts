@@ -2,9 +2,7 @@ import {
   Controller,
   Get,
   Param,
-  ParseBoolPipe,
   ParseUUIDPipe,
-  Query,
 } from '@nestjs/common';
 import { FishService } from './fish.service';
 
@@ -13,10 +11,9 @@ export class FishController {
   constructor(private fishService: FishService) {}
 
   @Get(':id')
-  getFishInfo(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Query('isFull', new ParseBoolPipe({ optional: true })) isFull?: boolean,
+  getFish(
+    @Param('id', ParseUUIDPipe) id: string
   ) {
-    return this.fishService.getFishInfo(id, { isFull });
+    return this.fishService.findOneById(id, { forResponse: true });
   }
 }

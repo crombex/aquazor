@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { readdirSync, readFileSync } from 'fs';
 import path from 'path';
-import { IMigration } from '../types';
+import { IMigration } from '../database.types';
 import { hashFromFile } from '../../../common/utils/hash-from-file';
 import 'dotenv/config';
 

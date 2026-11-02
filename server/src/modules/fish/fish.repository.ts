@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { DB_POOL } from '../database/types';
+import { DB_POOL } from '../database/database.types';
 import { Inject } from '@nestjs/common';
 import { TFishInDatabase } from './fish.types';
 
@@ -15,13 +15,13 @@ export class FishRepository {
         min_weight,
         max_length,
         min_length,
-        min_chance,
-        max_chance,
+        min_probability,
+        max_probability,
         image_url,
         description,
         rarity,
         min_sell_price,
-        deprecated 
+        unavailable 
       FROM fish WHERE id = $1`,
       [id],
     );

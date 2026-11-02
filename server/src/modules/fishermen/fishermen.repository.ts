@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { DB_POOL } from '../database/types';
+import { DB_POOL } from '../database/database.types';
 import { Inject } from '@nestjs/common';
 import { TFishermanInDatabase } from './fishermen.types';
 
@@ -17,7 +17,7 @@ export class FishermenRepository {
         description,
         avatar_url,
         level_required,
-        deprecated 
+        unavailable 
       FROM fishermen WHERE id = $1`,
       [id],
     );

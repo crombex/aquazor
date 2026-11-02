@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { DB_POOL } from '../database/types';
+import { DB_POOL } from '../database/database.types';
 import { Inject } from '@nestjs/common';
 import { TBaitInDatabase } from './baits.types';
 
@@ -18,7 +18,7 @@ export class BaitsRepository {
         image_url,
         level_required,
         rarity,
-        deprecated 
+        unavailable 
       FROM baits WHERE id = $1`,
       [id],
     );

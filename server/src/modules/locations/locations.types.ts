@@ -6,7 +6,7 @@ export interface LocationEntity {
   imageUrl: string;
   description: string;
   levelRequired: number;
-  deprecated: boolean;
+  unavailable: boolean;
 }
 
 export type TLocationInDatabase = Omit<
@@ -17,7 +17,3 @@ export type TLocationInDatabase = Omit<
   level_required: number;
 };
 
-export type TLocationFewData = Pick<
-  LocationEntity,
-  'id' | 'type' | 'title' | 'description' | 'imageUrl'
->;
