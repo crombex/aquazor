@@ -6,7 +6,6 @@ CREATE TABLE fishing_actions (
   inventory_fisherman_id UUID REFERENCES inventory_fishermans(id), -- идентификатор рыбака, который был использован в действии рыбалки
   inventory_rod_id UUID REFERENCES inventory_rods(id), -- идентификатор удочки, которая была использована в действии рыбалки
   inventory_bait_id UUID REFERENCES inventory_baits(id), -- идентификатор приманки, которая была использована в действии рыбалки
-  fisherman_id UUID NOT NULL REFERENCES fishermen(id), -- идентификатор рыбака, который был использован в действии рыбалки
   started_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP, -- дата и время начала действия рыбалки
   finished_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP + INTERVAL '3 hours', -- дата и время окончания действия рыбалки
   is_successful BOOLEAN NOT NULL -- флаг, указывающий на успешность действия рыбалки
