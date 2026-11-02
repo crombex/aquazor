@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { DB_POOL } from './types';
+import { DB_POOL } from './database.types';
 import { ConfigService } from '@nestjs/config';
 import { FactoryProvider } from '@nestjs/common';
 

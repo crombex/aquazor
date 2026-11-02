@@ -20,6 +20,7 @@ import type { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ParseImagePipe } from '../../common/pipes/images.pipe';
 import { FilesService } from '../files/files.service';
+import { UseUser } from './auth.decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -83,8 +84,8 @@ export class AuthController {
   @HttpCode(204)
   @UseGuards(AuthGuard)
   @Post('/logout')
-  async logout(@Req() req: Request, @Res() res: Response) {
-    await this.authService.logout(req.user.sid);
+  async logout(@UseUser('sid') sessionId: string, @Res() res: Response) {
+    await this.authService.logout(sessionId);
     this.cookiesService.setAccessTokenCookie(res, '', { maxAge: 0 });
     this.cookiesService.setRefreshTokenCookie(res, '', { maxAge: 0 });
     res.end();
@@ -93,8 +94,8 @@ export class AuthController {
   @HttpCode(204)
   @Post('/logout-all')
   @UseGuards(AuthGuard)
-  async logoutAll(@Req() req: Request, @Res() res: Response) {
-    await this.authService.logoutAll(req.user.sub);
+  async logoutAll(@UseUser('sub') userId: string, @Res() res: Response) {
+    await this.authService.logoutAll(userId);
     this.cookiesService.setAccessTokenCookie(res, '', { maxAge: 0 });
     this.cookiesService.setRefreshTokenCookie(res, '', { maxAge: 0 });
     res.end();

@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import { Inject, Injectable } from '@nestjs/common';
-import { DB_POOL } from '../database/types';
+import { DB_POOL } from '../database/database.types';
 import { IAuthSessionInDatabase, ICreateAuthSession } from './sessions.types';
 
 @Injectable()
