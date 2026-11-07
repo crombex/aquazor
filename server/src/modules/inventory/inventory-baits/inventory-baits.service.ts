@@ -1,41 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import {
-  IGetUserInventoryOptions,
-  IGetUserInventoryOptionsTransaction,
-} from '../common/inventory.types';
-import { InventoryFishRepository } from './inventory-baits.repository';
-import { InventoryFishEntity } from './inventory-baits.types';
+import { InventoryBaitsRepository } from './inventory-baits.repository';
 import { mapKeysToCamelCase } from '../../../common/utils/change-case';
+import { InventoryBaitEntity, TAddInventoryBait } from './inventory-baits.types';
+import { TAddInventoryItem } from '../common/inventory.types';
 
 @Injectable()
-export class InventoryFishService {
-  constructor(private inventoryFishRepository: InventoryFishRepository) {}
+export class InventoryBaitsService {
+  constructor(private inventoryBaitsRepository: InventoryBaitsRepository) {}
 
-  async getInventoryFish(
-    params: IGetUserInventoryOptions,
-  ): Promise<InventoryFishEntity[]>;
-  async getInventoryFish(
-    params: IGetUserInventoryOptionsTransaction,
-  ): Promise<void>;
-
-  async getInventoryFish(
-    params: IGetUserInventoryOptions | IGetUserInventoryOptionsTransaction,
-  ): Promise<any> {
-    if (params.limit && (params.limit < 0 || params.limit > 100)) {
-      params.limit = 100;
-    }
-    if (params.offset && params.offset < 0) {
-      params.offset = 0;
-    }
-    if ('connection' in params) {
-      await this.inventoryFishRepository.getInventoryFish(params);
-    } else {
-      const fishArray =
-        await this.inventoryFishRepository.getInventoryFish(params);
-      fishArray.forEach((fish) => {
-        mapKeysToCamelCase<InventoryFishEntity>(fish);
-      });
-      return fishArray as unknown as InventoryFishEntity[];
-    }
+  async getAllUserBaits(userId: string): Promise<InventoryBaitEntity[]> {
+    const baitsArray = await this.inventoryBaitsRepository.getAllUserBaits(userId);
+    const mappedBaitsArray: InventoryBaitEntity[] = [];
+    baitsArray.forEach((bait) => {
+      mappedBaitsArray.push(mapKeysToCamelCase<InventoryBaitEntity>(bait));
+    });
+    return mappedBaitsArray;
   }
+
+  // async addFish(params: TAddInventoryItem<TAddInventoryBait>) {
+  //   await this.inventoryBaitsRepository.addBait(params);
+  // }
 }

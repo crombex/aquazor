@@ -1,14 +1,22 @@
-export interface InventoryFishEntity {
-  id: string;
-  userId: string;
-  fishId: string;
-  weight: number;
-  length: number;
-  description: string;
-  sellPrice: number;
-}
+import { BaitEntity } from '../../bestiary/baits/baits.types';
 
-export type TInventoryFishInDatabase = Omit<
-  InventoryFishEntity,
-  'userId' | 'fishId' | 'sellPrice'
-> & { user_id: string; fish_id: string; sell_price: number };
+export type InventoryBaitEntity = TAddInventoryBait & Omit<BaitEntity, 'id'>;
+
+export type TAddInventoryBait = {
+  id: string;
+  baitId: string;
+  quantity: number;
+  userId: string;
+};
+
+export type TInventoryBaitFromDatabase = Omit<
+  InventoryBaitEntity,
+  'sellPrice' | 'baitId' | 'userId' | 'imageUrl' | 'buyPrice' | 'levelRequired'
+> & {
+  sell_price: number;
+  bait_id: string;
+  user_id: string;
+  image_url: string;
+  buyPrice: number;
+  levelRequired: number;
+};

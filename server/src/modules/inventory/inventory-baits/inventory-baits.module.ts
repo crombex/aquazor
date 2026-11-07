@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { InventoryFishRepository } from './inventory-baits.repository';
-import { InventoryFishService } from './inventory-baits.service';
+import { InventoryBaitsRepository } from '../inventory-baits/inventory-baits.repository';
+import { InventoryBaitsService } from '../inventory-baits/inventory-baits.service';
 
 @Module({
-  providers: [InventoryFishService, InventoryFishRepository],
-  exports: [InventoryFishService],
+  providers: [InventoryBaitsService, InventoryBaitsRepository],
+  exports: [InventoryBaitsService],
 })
-export class InventoryFishModule {}
+export class InventoryBaitsModule {}
