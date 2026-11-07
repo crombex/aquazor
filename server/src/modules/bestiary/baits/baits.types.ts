@@ -1,4 +1,4 @@
-export interface BaitEntity {
+export type BaitEntity = {
   id: string;
   type: string;
   rarity: string;

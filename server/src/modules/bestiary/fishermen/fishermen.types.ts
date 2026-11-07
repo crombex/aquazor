@@ -1,4 +1,4 @@
-export interface FishermanEntity {
+export type FishermanEntity = {
   id: string;
   name: string;
   age: number;

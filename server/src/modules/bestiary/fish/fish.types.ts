@@ -1,4 +1,4 @@
-export interface FishEntity {
+export type FishEntity = {
   id: string;
   type: string;
   maxWeight: number;

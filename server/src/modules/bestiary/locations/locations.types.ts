@@ -1,4 +1,4 @@
-export interface LocationEntity {
+export type LocationEntity = {
   id: string;
   type: string;
   title: string;

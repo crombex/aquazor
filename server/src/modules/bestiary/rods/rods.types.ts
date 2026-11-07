@@ -1,4 +1,4 @@
-export interface RodEntity {
+export type RodEntity = {
   id: string;
   type: string;
   efficiency: number;
