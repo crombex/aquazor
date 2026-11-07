@@ -1,22 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
 import { DB_POOL } from '../../database/database.types';
-import { IGetUserInventoryOptions } from '../common/inventory.types';
-import {
-  TAddInventoryFish,
-  TInventoryFishInDatabase,
-} from './inventory-fish.types';
+import { TAddInventoryFish, TInventoryFishFromDatabase } from '../inventory-fish/inventory-fish.types';
+import { TAddInventoryItem } from '../common/inventory.types';
+import { FishEntity } from '../../bestiary/fish/fish.types';
 
 @Injectable()
 export class InventoryFishRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
 
-  async getAllFish({
-    limit,
-    offset,
-    userId,
-    connection,
-  }: IGetUserInventoryOptions): Promise<TInventoryFishInDatabase[] | void> {
+  async getAllUserFish(userId: string): Promise<TInventoryFishFromDatabase[]> {
     let sqlQuery = `
       SELECT 
         infi.id,
@@ -34,29 +27,18 @@ export class InventoryFishRepository {
       LEFT JOIN fish ON fish.id = infi.fish_id
       WHERE infi.user_id = $1
       ORDER BY fish.type ASC
-      LIMIT $2
-      OFFSET $3
     `;
-    if (connection) {
-      await connection.query(sqlQuery, [userId, limit, offset]);
-    } else {
-      const { rows } = await this.pool.query<TInventoryFishInDatabase>(
-        sqlQuery,
-        [userId, limit, offset],
-      );
-      return rows;
-    }
+    const result = await this.pool.query<TInventoryFishFromDatabase>(sqlQuery, [
+      userId,
+    ]);
+    return result.rows;
   }
 
-  async addFish({
-    userId,
-    fish,
-    connection,
-  }: TAddInventoryFish): Promise<void | string> {
-    if (connection) {
-      await connection.query(
-        `INSERT INTO inventory_fish (id, user_id, fish_id, )`,
-      );
-    }
-  }
+  // async addFish({ item, userId, connection }: TAddInventoryItem<TAddInventoryFish>) {
+  //   if (connection) {
+  //     await connection.query(
+  //       `INSERT INTO inventory_fish (id, user_id, fish_id, )`,
+  //     );
+  //   }
+  // }
 }

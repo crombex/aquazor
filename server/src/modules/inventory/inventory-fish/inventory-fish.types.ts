@@ -1,22 +1,25 @@
-import { PoolClient } from "pg";
+import { FishEntity } from '../../bestiary/fish/fish.types';
 
-export interface InventoryFishEntity {
-  id: string;
-  userId: string;
-  fishId: string;
-  weight: number;
-  length: number;
-  description: string;
-  sellPrice: number;
-}
-
-export type TInventoryFishInDatabase = Omit<
-  InventoryFishEntity,
-  'userId' | 'fishId' | 'sellPrice'
-> & { user_id: string; fish_id: string; sell_price: number };
+export type InventoryFishEntity = TAddInventoryFish & Pick<
+  FishEntity,
+  'description' | 'imageUrl' | 'rarity' | 'type' | 'unavailable'
+>;
 
 export type TAddInventoryFish = {
-  fish: InventoryFishEntity;
+  id: string;
+  weight: number;
+  length: number;
+  sellPrice: number;
+  fishId: string;
   userId: string;
-  connection?: PoolClient
+};
+
+export type TInventoryFishFromDatabase = Omit<
+  InventoryFishEntity,
+  'sellPrice' | 'fishId' | 'userId' | 'imageUrl'
+> & {
+  sell_price: number;
+  fish_id: string;
+  user_id: string;
+  image_url: string;
 };
