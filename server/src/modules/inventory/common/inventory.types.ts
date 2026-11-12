@@ -1,4 +1,4 @@
-import { PoolClient } from "pg";
+import { PoolClient } from 'pg';
 
 export enum EInventoryCategories {
   FISH = 'fish',
@@ -15,5 +15,10 @@ export interface IGetUserInventoryOptions {
 export type TAddInventoryItem<T> = {
   item: T;
   userId: string;
+  connection?: PoolClient;
+};
+
+export type TRemoveInventoryItem = {
+  id: string;
   connection?: PoolClient;
 };

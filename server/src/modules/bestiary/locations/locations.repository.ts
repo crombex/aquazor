@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { DB_POOL } from '../database/database.types';
+import { DB_POOL } from '../../database/database.types';
 import { Inject } from '@nestjs/common';
 import { TLocationInDatabase } from './locations.types';
 
@@ -16,7 +16,8 @@ export class LocationsRepository {
         image_url,
         description,
         level_required,
-        unavailable 
+        unavailable,
+        price
       FROM locations WHERE id = $1`,
       [id],
     );

@@ -17,7 +17,8 @@ export class FishermenRepository {
         description,
         avatar_url,
         level_required,
-        unavailable 
+        unavailable,
+        price 
       FROM fishermen WHERE id = $1`,
       [id],
     );

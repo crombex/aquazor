@@ -8,6 +8,7 @@ export type FishermanEntity = {
   description: string;
   levelRequired: number;
   unavailable: boolean;
+  price: number;
 }
 
 export type TFishermanInDatabase = Omit<

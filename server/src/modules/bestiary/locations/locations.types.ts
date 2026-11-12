@@ -7,6 +7,7 @@ export type LocationEntity = {
   description: string;
   levelRequired: number;
   unavailable: boolean;
+  price: number;
 }
 
 export type TLocationInDatabase = Omit<
