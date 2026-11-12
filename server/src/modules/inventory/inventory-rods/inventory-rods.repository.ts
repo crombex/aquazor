@@ -40,15 +40,53 @@ export class InventoryRodsRepository {
     return result.rows;
   }
 
-  // async addRod({
-  //   userId,
-  //   item,
-  //   connection,
-  // }: TAddInventoryItem<TAddInventoryRod>) {
-  //   if (connection) {
-  //     await connection.query(
-  //       `INSERT INTO inventory_fish (id, user_id, fish_id, )`,
-  //     );
-  //   }
-  // }
+async addRod({
+    item: { id, rodId },
+    userId,
+    connection,
+  }: TAddInventoryItem<TAddInventoryRod>) {
+    const sqlQuery = `
+      INSERT INTO inventory_rods
+        (id, user_id, rod_id) VALUES
+        ($1, $2, $3)
+        `;
+    const argsArray = [id, userId, rodId];
+    if (connection) {
+      await connection.query(sqlQuery, argsArray);
+    } else {
+      await this.pool.query(sqlQuery, argsArray);
+    }
+  }
+
+  async findOneById(id: string) {
+    const result = await this.pool.query<TInventoryRodFromDatabase>(
+      `
+      SELECT 
+        ir.id,
+        ir.user_id,
+        ir.rod_id,
+        ir.started_at,
+        ir.finished_at,
+        r.type,
+        r.rarity,
+        r.efficiency,
+        r.image_url,
+        r.description,
+        r.power,
+        r.buy_price,
+        r.sell_price,
+        r.level_required,
+        r.unavailable
+      FROM inventory_rods AS ir
+      LEFT JOIN rods AS r ON r.id = ir.rod_id
+      WHERE ir.id = $1
+      `,
+      [id],
+    );
+    if (result.rows.length === 0) {
+      return null;
+    } else {
+      return result.rows[0];
+    }
+  }
 }
