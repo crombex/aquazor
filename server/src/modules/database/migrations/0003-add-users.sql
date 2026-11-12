@@ -11,7 +11,7 @@ CREATE TABLE users (
   avatar_url TEXT,
   birthdate DATE,
   nickname VARCHAR(32) UNIQUE NOT NULL,
-  experience INT DEFAULT 0,
-  coins INT DEFAULT 0,
-  special_coins INT DEFAULT 0
+  experience INT DEFAULT 0 CHECK (experience >= 0),
+  coins INT DEFAULT 0 CHECK (coins >= 0),
+  special_coins INT DEFAULT 0 CHECK (special_coins >= 0)
 )

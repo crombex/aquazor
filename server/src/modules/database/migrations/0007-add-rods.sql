@@ -1,11 +1,11 @@
 CREATE TABLE rods (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- уникальный идентификатор удочки
-  efficiency DECIMAL(3, 1) NOT NULL, -- эффективность удочки, влияет на шанс поймать рыбу
+  efficiency REAL NOT NULL, -- эффективность удочки, влияет на шанс поймать рыбу
   description TEXT, -- краткое описание удочки
   image_url TEXT NOT NULL, -- ссылка на изображение удочки например 'public/images/rods/derevyannaya-ydochka.png'
   type VARCHAR(64) UNIQUE NOT NULL, -- например 'деревянная удочка'
   rarity rarity_enum NOT NULL DEFAULT 'common', -- редкость удочки, влияет на шанс поймать рыбу
-  power DECIMAL(3, 1) NOT NULL, -- сила удочки, влияет на шанс поймать рыбу
+  power REAL NOT NULL, -- сила удочки, влияет на шанс поймать рыбу
   buy_price INT NOT NULL,
   sell_price INT NOT NULL,
   level_required SMALLINT NOT NULL DEFAULT 0,

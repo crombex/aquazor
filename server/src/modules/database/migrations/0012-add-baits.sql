@@ -4,7 +4,7 @@ CREATE TABLE baits (
   rarity rarity_enum NOT NULL DEFAULT 'common', -- редкость приманки, влияет на шанс поймать рыбу
   image_url TEXT NOT NULL, -- ссылка на изображение приманки например 'public/images/baits/cherv-dozhdevoi.png'
   description TEXT, -- краткое описание приманки
-  efficiency DECIMAL(3, 1), -- эффективность приманки
+  efficiency REAL NOT NULL, -- эффективность приманки
   buy_price INT NOT NULL,
   sell_price INT NOT NULL,
   level_required SMALLINT NOT NULL DEFAULT 0,
