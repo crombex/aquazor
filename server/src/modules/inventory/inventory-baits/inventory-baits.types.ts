@@ -1,3 +1,4 @@
+import { PoolClient } from 'pg';
 import { BaitEntity } from '../../bestiary/baits/baits.types';
 
 export type InventoryBaitEntity = TAddInventoryBait & Omit<BaitEntity, 'id'>;
@@ -19,4 +20,10 @@ export type TInventoryBaitFromDatabase = Omit<
   image_url: string;
   buyPrice: number;
   levelRequired: number;
+};
+
+export type TChangeInvenoryBaitsAmount = {
+  id: string;
+  amount: number;
+  connection?: PoolClient;
 };
