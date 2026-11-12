@@ -1,10 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
 import { DB_POOL } from '../../database/database.types';
-import { TAddInventoryFish, TInventoryFishFromDatabase } from '../inventory-fish/inventory-fish.types';
-import { TAddInventoryItem } from '../common/inventory.types';
-import { FishEntity } from '../../bestiary/fish/fish.types';
-
+import {
+  TAddInventoryFish,
+  TInventoryFishFromDatabase,
+} from '../inventory-fish/inventory-fish.types';
+import {
+  TAddInventoryItem,
+  TRemoveInventoryItem,
+} from '../common/inventory.types';
 @Injectable()
 export class InventoryFishRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
@@ -19,6 +23,7 @@ export class InventoryFishRepository {
         infi.length,
         infi.description,
         infi.sell_price,
+        infi.is_sold,
         fish.image_url,
         fish.type,
         fish.rarity,
@@ -34,11 +39,59 @@ export class InventoryFishRepository {
     return result.rows;
   }
 
-  // async addFish({ item, userId, connection }: TAddInventoryItem<TAddInventoryFish>) {
-  //   if (connection) {
-  //     await connection.query(
-  //       `INSERT INTO inventory_fish (id, user_id, fish_id, )`,
-  //     );
-  //   }
-  // }
+  async addFish({
+    item: { id, fishId, weight, length, sellPrice },
+    userId,
+    connection,
+  }: TAddInventoryItem<TAddInventoryFish>) {
+    const sqlQuery = `
+      INSERT INTO inventory_fish 
+        (id, user_id, fish_id, weight, length, sell_price) VALUES
+        ($1, $2, $3, $4, $5, $6)
+        `;
+    const argsArray = [id, userId, fishId, weight, length, sellPrice];
+    if (connection) {
+      await connection.query(sqlQuery, argsArray);
+    } else {
+      await this.pool.query(sqlQuery, argsArray);
+    }
+  }
+
+  async findOneById(id: string) {
+    const result = await this.pool.query<TInventoryFishFromDatabase>(
+      `
+      SELECT
+        infi.id,
+        infi.user_id,
+        infi.fish_id,
+        infi.weight,
+        infi.length,
+        infi.description,
+        infi.sell_price,
+        infi.is_sold,
+        f.image_url,
+        f.type,
+        f.rarity,
+        f.unavailable
+      FROM inventory_fish AS infi
+      LEFT JOIN fish AS f ON f.id = infi.fish_id
+      WHERE infi.id = $1
+      `,
+      [id],
+    );
+    if (result.rows.length === 0) {
+      return null;
+    } else {
+      return result.rows[0];
+    }
+  }
+
+  async writeOffFish({ id, connection }: TRemoveInventoryItem) {
+    const sqlQuery = `UPDATE TABLE inventory_fish SET is_sold = TRUE WHERE id = $1`;
+    if (connection) {
+      await connection.query(sqlQuery, [id]);
+    } else {
+      await this.pool.query(sqlQuery, [id]);
+    }
+  }
 }

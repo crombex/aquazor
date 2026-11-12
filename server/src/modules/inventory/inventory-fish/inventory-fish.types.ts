@@ -12,14 +12,16 @@ export type TAddInventoryFish = {
   sellPrice: number;
   fishId: string;
   userId: string;
+  isSold: boolean;
 };
 
 export type TInventoryFishFromDatabase = Omit<
   InventoryFishEntity,
-  'sellPrice' | 'fishId' | 'userId' | 'imageUrl'
+  'sellPrice' | 'fishId' | 'userId' | 'imageUrl' | 'isSold'
 > & {
   sell_price: number;
   fish_id: string;
   user_id: string;
   image_url: string;
+  is_sold: boolean;
 };
