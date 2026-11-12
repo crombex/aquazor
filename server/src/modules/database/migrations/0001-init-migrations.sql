@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS migrations (
 	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 	filename VARCHAR(255) NOT NULL UNIQUE,
