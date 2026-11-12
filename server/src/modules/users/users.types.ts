@@ -1,3 +1,5 @@
+import { PoolClient } from "pg";
+
 export enum Roles {
   ADMIN = 'admin',
   USER = 'user',
@@ -50,3 +52,11 @@ export type TUserFindOptions = {
    */
   includeSensitiveData?: boolean;
 };
+
+export type TChangeUserCoinsAmount = {
+  userId: string;
+  amount: number;
+  connection?: PoolClient;
+}
+
+export type TChangeUserExperienceAmount = TChangeUserCoinsAmount

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { TRegisterData } from '../auth/auth.types';
 import { UsersRepository } from './users.repository';
 import { mapKeysToCamelCase } from '../../common/utils/change-case';
-import { UserEntity } from './users.types';
+import { TChangeUserCoinsAmount, TChangeUserExperienceAmount, UserEntity } from './users.types';
 import { TUserEntityMapped, TUserFindOptions } from './users.types';
 
 @Injectable()
@@ -127,21 +127,21 @@ export class UsersService {
     }
   }
 
-  async changeCoinsAmount(userId: string, amount: number) {
+  async changeCoinsAmount({userId, amount, ...rest}: TChangeUserCoinsAmount) {
     const foundUser = await(this.findOneById(userId, {includeSensitiveData: true})) as UserEntity
     UsersService.checkUserValidity(foundUser)
     if (amount < 0 && foundUser.coins < Math.abs(amount)) {
       throw new BadRequestException('Not enough coins to write off')
     }
-    await this.usersRepository.changeCoinsAmount(userId, amount)
+    await this.usersRepository.changeCoinsAmount({userId, amount, ...rest})
   }
 
-  async changeExperienceAmount(userId: string, amount: number) {
+  async changeExperienceAmount({userId, amount, ...rest}: TChangeUserExperienceAmount) {
     const foundUser = await(this.findOneById(userId, {includeSensitiveData: true})) as UserEntity
     UsersService.checkUserValidity(foundUser)
     if (amount < 0 && foundUser.experience < Math.abs(amount)) {
       throw new BadRequestException('Not enough experience to write off')
     }
-    await this.usersRepository.changeExperienceAmount(userId, amount)
+    await this.usersRepository.changeExperienceAmount({userId, amount, ...rest})
   }
 }

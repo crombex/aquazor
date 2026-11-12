@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Pool } from 'pg';
 import { TRegisterData } from '../auth/auth.types';
-import { TUserInDatabase } from './users.types';
+import { TChangeUserCoinsAmount, TChangeUserExperienceAmount, TUserInDatabase } from './users.types';
 
 @Injectable()
 export class UsersRepository {
@@ -59,23 +59,21 @@ export class UsersRepository {
     }
   }
 
-  async changeCoinsAmount(userId: string, amount: number) {
-    const newCoinsAmount = await this.pool.query<{ coins: number }>(
-      `UPDATE users SET coins = coins + $1 WHERE id = $2 AND (coins + $1 >= 0) RETURNING coins`,
-      [amount, userId],
-    );
-    if (newCoinsAmount.rows.length === 0) {
-      throw new InternalServerErrorException('Server can not respond');
+  async changeCoinsAmount({userId, amount, connection}: TChangeUserCoinsAmount) {
+    const sqlQuery = `UPDATE users SET coins = coins + $1 WHERE id = $2`
+    if (connection) {
+      await connection.query(sqlQuery, [amount, userId])
+    } else {
+       await this.pool.query(sqlQuery, [amount, userId]);
     }
   }
 
-  async changeExperienceAmount(userId: string, amount: number) {
-    const newExperienceAmount = await this.pool.query<{ coins: number }>(
-      `UPDATE users SET experience = experience + $1 WHERE id = $2 AND (experience + $1 >= 0) RETURNING experience`,
-      [amount, userId],
-    );
-    if (newExperienceAmount.rows.length === 0) {
-      throw new InternalServerErrorException('Server can not respond');
+  async changeExperienceAmount({userId, amount, connection}: TChangeUserExperienceAmount) {
+    const sqlQuery = `UPDATE users SET experience = experience + $1 WHERE id = $2`
+    if (connection) {
+      await connection.query(sqlQuery, [amount, userId])
+    } else {
+       await this.pool.query(sqlQuery, [amount, userId]);
     }
   }
 }
