@@ -9,18 +9,34 @@ import { TAddInventoryItem } from '../common/inventory.types';
 
 @Injectable()
 export class InventoryFishermenService {
-  constructor(private inventoryFishermenRepository: InventoryFishermenRepository) {}
+  constructor(
+    private inventoryFishermenRepository: InventoryFishermenRepository,
+  ) {}
 
-  async getAllUserFishermen(userId: string): Promise<InventoryFishermanEntity[]> {
-    const fishermenArray = await this.inventoryFishermenRepository.getAllUserFishermen(userId);
+  async getAllUserFishermen(
+    userId: string,
+  ): Promise<InventoryFishermanEntity[]> {
+    const fishermenArray =
+      await this.inventoryFishermenRepository.getAllUserFishermen(userId);
     const mappedFishermenArray: InventoryFishermanEntity[] = [];
     fishermenArray.forEach((fisherman) => {
-      mappedFishermenArray.push(mapKeysToCamelCase<InventoryFishermanEntity>(fisherman));
+      mappedFishermenArray.push(
+        mapKeysToCamelCase<InventoryFishermanEntity>(fisherman),
+      );
     });
     return mappedFishermenArray;
   }
 
-  // async addFisherman(params: TAddInventoryItem<TAddInventoryFisherman>) {
-  //   await this.inventoryFishermenRepository.addFisherman(params);
-  // }
+  async addFisherman(params: TAddInventoryItem<TAddInventoryFisherman>) {
+    await this.inventoryFishermenRepository.addFisherman(params);
+  }
+
+  async findOneById(id: string) {
+    const foundFisherman = await this.inventoryFishermenRepository.findOneById(id);
+    if (!foundFisherman) {
+      return null
+    } else {
+      return mapKeysToCamelCase<InventoryFishermanEntity>(foundFisherman)
+    }
+  }
 }
