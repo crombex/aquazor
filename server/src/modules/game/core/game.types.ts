@@ -24,6 +24,7 @@ export interface IGameSlot {
   actualFish: TActualFish | null;
   rod: RodEntity | null;
   bait: BaitEntity | null;
+  experienceEarned: number;
 }
 
 interface IRaritySlot {

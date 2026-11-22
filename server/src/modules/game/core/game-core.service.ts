@@ -39,6 +39,7 @@ export class GameCoreService {
       actualFish: null,
       rod: null,
       bait: null,
+      experienceEarned: 0
     }));
     for (let index = 0; index < slots.length; index++) {
       const slot = slots[index];
@@ -146,16 +147,14 @@ export class GameCoreService {
         }
       }
     });
-    let experienceEarned = 0;
     slots.forEach((slot) => {
       if (slot.bestiaryFish && slot.actualFish) {
-        experienceEarned += experiencePerFishRarity[slot.bestiaryFish.rarity];
+        slot.experienceEarned += experiencePerFishRarity[slot.bestiaryFish.rarity];
       }
     });
     return {
       fishingTime,
       attempts: slots,
-      experienceEarned,
       baitsRemained: baitsCopy,
     };
   }
