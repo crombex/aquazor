@@ -32,11 +32,25 @@ export class UsersService {
    * Проверяем объект пользователя на поля удаленного и заблокированного аккаунта.
    * Если условие истинно - выбрасываем соответсвующую ошибку, иначе ничего не делаем
    */
-  static checkUserValidity(user: UserEntity): void {
+  checkUserValidity(user: UserEntity): void {
     if (user.isBlocked) {
       throw new BadRequestException('This user is blocked')
     } else if (user.isDeleted) {
       throw new BadRequestException('This user was deleted')
+    }
+  }
+
+  convertExperienceToLevel(experience: number) {
+    const rounds = 99
+    let increaseExperiencePerLevel = 50
+
+    for (let i = 1; i <= rounds; i++) {
+      experience -= increaseExperiencePerLevel
+      if (experience >= 0) {
+        increaseExperiencePerLevel += 50
+      } else {
+        return i
+      }
     }
   }
 
@@ -129,7 +143,7 @@ export class UsersService {
 
   async changeCoinsAmount({userId, amount, ...rest}: TChangeUserCoinsAmount) {
     const foundUser = await(this.findOneById(userId, {includeSensitiveData: true})) as UserEntity
-    UsersService.checkUserValidity(foundUser)
+    this.checkUserValidity(foundUser)
     if (amount < 0 && foundUser.coins < Math.abs(amount)) {
       throw new BadRequestException('Not enough coins to write off')
     }
@@ -138,7 +152,7 @@ export class UsersService {
 
   async changeExperienceAmount({userId, amount, ...rest}: TChangeUserExperienceAmount) {
     const foundUser = await(this.findOneById(userId, {includeSensitiveData: true})) as UserEntity
-    UsersService.checkUserValidity(foundUser)
+    this.checkUserValidity(foundUser)
     if (amount < 0 && foundUser.experience < Math.abs(amount)) {
       throw new BadRequestException('Not enough experience to write off')
     }
