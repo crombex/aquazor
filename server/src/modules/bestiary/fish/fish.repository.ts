@@ -2,8 +2,8 @@ import { Pool } from 'pg';
 import { DB_POOL } from '../../database/database.types';
 import { Inject } from '@nestjs/common';
 import { FishEntity, TFishInDatabase } from './fish.types';
-import { EGameRarity } from '../../game/game.types';
-import { randomPickInRange } from '../../../common/utils/range-random-pick';
+import { TGameRarity } from '../../game/game.types';
+import { randomPickInRange } from '../../../common/utils/random-pick';
 
 export class FishRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
@@ -34,7 +34,7 @@ export class FishRepository {
     }
   }
 
-  async getOneInCategory(category: EGameRarity) {
+  async getOneInCategory(category: TGameRarity) {
     const fishInCategoryCount = (
       await this.pool.query<{ quantity: number }>(
         `

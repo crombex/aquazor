@@ -1,7 +1,9 @@
+import { TGameRarity } from "../../game/game.types";
+
 export type BaitEntity = {
   id: string;
   type: string;
-  rarity: string;
+  rarity: TGameRarity;
   imageUrl: string;
   description: string;
   efficiency: number;

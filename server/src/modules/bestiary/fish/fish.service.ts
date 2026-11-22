@@ -2,7 +2,7 @@ import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
 import { FishRepository } from './fish.repository';
 import { mapKeysToCamelCase } from '../../../common/utils/change-case';
 import { FishEntity, TFishForResponseData } from './fish.types';
-import { EGameRarity } from '../../game/game.types';
+import { TGameRarity } from '../../game/game.types';
 
 @Injectable()
 export class FishService {
@@ -37,7 +37,7 @@ export class FishService {
     }
   }
 
-  async getOneInCategory(category: EGameRarity) {
-    return await this.fishRepository.getOneInCategory(category)
+  async getOneInCategory(category: TGameRarity) {
+    return await this.fishRepository.getOneInCategory(category);
   }
 }

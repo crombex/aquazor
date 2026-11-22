@@ -1,7 +1,1 @@
-export enum EGameRarity {
-  COMMON = 'common',
-  UNCOMMON = 'uncommon',
-  RARE = 'rare',
-  EPIC = 'epic',
-  LEGENDARY = 'legendary'
-}
+export type TGameRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';

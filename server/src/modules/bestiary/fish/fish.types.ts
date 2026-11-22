@@ -1,3 +1,5 @@
+import { TGameRarity } from "../../game/game.types";
+
 export type FishEntity = {
   id: string;
   type: string;
@@ -9,7 +11,7 @@ export type FishEntity = {
   minProbability: number;
   imageUrl: string;
   description: string;
-  rarity: string;
+  rarity: TGameRarity;
   minSellPrice: number;
   unavailable: boolean;
 }

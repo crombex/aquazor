@@ -1,3 +1,5 @@
+import { TGameRarity } from "../../game/game.types";
+
 export type RodEntity = {
   id: string;
   type: string;
@@ -5,7 +7,7 @@ export type RodEntity = {
   power: number;
   imageUrl: string;
   description: string;
-  rarity: string;
+  rarity: TGameRarity;
   unavailable: boolean;
   buyPrice: number;
   sellPrice: number;
