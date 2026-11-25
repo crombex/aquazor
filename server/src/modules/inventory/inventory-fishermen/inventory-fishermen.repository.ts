@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Pool } from 'pg';
+import { Pool, PoolClient } from 'pg';
 import { DB_POOL } from '../../database/database.types';
 import {
   TAddInventoryFisherman,
-  TInventoryFishermanFromDatabase,
+  TInventoryFishermanRow,
 } from './inventory-fishermen.types';
 import { TAddInventoryItem } from '../common/inventory.types';
 
@@ -11,17 +11,15 @@ import { TAddInventoryItem } from '../common/inventory.types';
 export class InventoryFishermenRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
 
-  async getAllUserFishermen(
-    userId: string,
-  ): Promise<TInventoryFishermanFromDatabase[]> {
-    let sqlQuery = `
+  async getAllUserFishermen(userId: string): Promise<TInventoryFishermanRow[]> {
+    const sqlQuery = `
       SELECT 
         inf.id,
         inf.user_id,
         inf.fisherman_id,
         inf.started_at,
         inf.finished_at,
-        inf.energy,
+        inf.status,
         f.name,
         f.age,
         f.skill,
@@ -36,24 +34,23 @@ export class InventoryFishermenRepository {
       WHERE inf.user_id = $1
       ORDER BY f.name ASC
     `;
-    const result = await this.pool.query<TInventoryFishermanFromDatabase>(
-      sqlQuery,
-      [userId],
-    );
+    const result = await this.pool.query<TInventoryFishermanRow>(sqlQuery, [
+      userId,
+    ]);
     return result.rows;
   }
 
   async addFisherman({
-    item: { id, fishermanId },
+    item: { id, fishermanId, status },
     userId,
     connection,
   }: TAddInventoryItem<TAddInventoryFisherman>) {
     const sqlQuery = `
       INSERT INTO inventory_fishermen
-        (id, user_id, fisherman_id) VALUES
-        ($1, $2, $3)
+        (id, user_id, fisherman_id, status) VALUES
+        ($1, $2, $3, $4)
         `;
-    const argsArray = [id, userId, fishermanId];
+    const argsArray = [id, userId, fishermanId, status];
     if (connection) {
       await connection.query(sqlQuery, argsArray);
     } else {
@@ -62,7 +59,7 @@ export class InventoryFishermenRepository {
   }
 
   async findOneById(id: string) {
-    const result = await this.pool.query<TInventoryFishermanFromDatabase>(
+    const result = await this.pool.query<TInventoryFishermanRow>(
       `
       SELECT 
         inf.id,
@@ -70,7 +67,7 @@ export class InventoryFishermenRepository {
         inf.fisherman_id,
         inf.started_at,
         inf.finished_at,
-        inf.energy,
+        inf.status,
         f.name,
         f.age,
         f.skill,
@@ -91,5 +88,19 @@ export class InventoryFishermenRepository {
     } else {
       return result.rows[0];
     }
+  }
+
+  async markBusy(fishermanId: string, connection: PoolClient) {
+    await connection.query(
+      `UPDATE inventory_fishermen SET status = 'busy' WHERE id = $1 AND status = 'free' AND (finished_at <= NOW() OR finished_at IS NULL)`,
+      [fishermanId],
+    );
+  }
+
+  async markFree(fishermanId: string, connection: PoolClient) {
+    await connection.query(
+      `UPDATE inventory_fishermen SET status = 'free' WHERE id = $1 AND status = 'busy' AND finished_at <= NOW()`,
+      [fishermanId],
+    );
   }
 }

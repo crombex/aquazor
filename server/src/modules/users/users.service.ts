@@ -1,8 +1,16 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { TRegisterData } from '../auth/auth.types';
 import { UsersRepository } from './users.repository';
 import { mapKeysToCamelCase } from '../../common/utils/change-case';
-import { TChangeUserCoinsAmount, TChangeUserExperienceAmount, UserEntity } from './users.types';
+import {
+  TChangeUserCoinsAmount,
+  TChangeUserExperienceAmount,
+  UserEntity,
+} from './users.types';
 import { TUserEntityMapped, TUserFindOptions } from './users.types';
 
 @Injectable()
@@ -34,25 +42,25 @@ export class UsersService {
    */
   checkUserValidity(user: UserEntity): void {
     if (user.isBlocked) {
-      throw new BadRequestException('This user is blocked')
+      throw new BadRequestException('This user is blocked');
     } else if (user.isDeleted) {
-      throw new BadRequestException('This user was deleted')
+      throw new BadRequestException('This user was deleted');
     }
   }
 
   convertExperienceToLevel(experience: number) {
-    const rounds = 99
-    let increaseExperiencePerLevel = 50
+    const rounds = 99;
+    let increaseExperiencePerLevel = 50;
 
     for (let i = 1; i <= rounds; i++) {
-      experience -= increaseExperiencePerLevel
+      experience -= increaseExperiencePerLevel;
       if (experience >= 0) {
-        increaseExperiencePerLevel += 50
+        increaseExperiencePerLevel += 50;
       } else {
-        return i
+        return i;
       }
     }
-    return rounds
+    return rounds;
   }
 
   createUser(registerInfo: TRegisterData) {
@@ -126,7 +134,10 @@ export class UsersService {
     id: string,
     options: TUserFindOptions = { includeSensitiveData: false },
   ): Promise<TUserEntityMapped | UserEntity> {
-    const user = await this.usersRepository.findOneBy({ id });
+    const user = await this.usersRepository.findOneBy({
+      id,
+      connection: options.connection,
+    });
     if (user !== null) {
       const userMappedFull = {
         ...mapKeysToCamelCase<UserEntity>(user),
@@ -142,21 +153,33 @@ export class UsersService {
     }
   }
 
-  async changeCoinsAmount({userId, amount, ...rest}: TChangeUserCoinsAmount) {
-    const foundUser = await(this.findOneById(userId, {includeSensitiveData: true})) as UserEntity
-    this.checkUserValidity(foundUser)
+  async changeCoinsAmount({ userId, amount, ...rest }: TChangeUserCoinsAmount) {
+    const foundUser = (await this.findOneById(userId, {
+      includeSensitiveData: true,
+    })) as UserEntity;
+    this.checkUserValidity(foundUser);
     if (amount < 0 && foundUser.coins < Math.abs(amount)) {
-      throw new BadRequestException('Not enough coins to write off')
+      throw new BadRequestException('Not enough coins to write off');
     }
-    await this.usersRepository.changeCoinsAmount({userId, amount, ...rest})
+    await this.usersRepository.changeCoinsAmount({ userId, amount, ...rest });
   }
 
-  async changeExperienceAmount({userId, amount, ...rest}: TChangeUserExperienceAmount) {
-    const foundUser = await(this.findOneById(userId, {includeSensitiveData: true})) as UserEntity
-    this.checkUserValidity(foundUser)
+  async changeExperienceAmount({
+    userId,
+    amount,
+    ...rest
+  }: TChangeUserExperienceAmount) {
+    const foundUser = (await this.findOneById(userId, {
+      includeSensitiveData: true,
+    })) as UserEntity;
+    this.checkUserValidity(foundUser);
     if (amount < 0 && foundUser.experience < Math.abs(amount)) {
-      throw new BadRequestException('Not enough experience to write off')
+      throw new BadRequestException('Not enough experience to write off');
     }
-    await this.usersRepository.changeExperienceAmount({userId, amount, ...rest})
+    await this.usersRepository.changeExperienceAmount({
+      userId,
+      amount,
+      ...rest,
+    });
   }
 }

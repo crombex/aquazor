@@ -1,12 +1,12 @@
 import { DB_POOL } from '../database/database.types';
-import {
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { Pool } from 'pg';
+import { Inject, Injectable } from '@nestjs/common';
+import { Pool, PoolClient, QueryResult } from 'pg';
 import { TRegisterData } from '../auth/auth.types';
-import { TChangeUserCoinsAmount, TChangeUserExperienceAmount, TUserInDatabase } from './users.types';
+import {
+  TChangeUserCoinsAmount,
+  TChangeUserExperienceAmount,
+  TUserRow,
+} from './users.types';
 
 @Injectable()
 export class UsersRepository {
@@ -42,15 +42,24 @@ export class UsersRepository {
     id,
     email,
     nickname,
+    connection,
   }: {
     id?: string;
     email?: string;
     nickname?: string;
+    connection?: PoolClient;
   }) {
-    const result = await this.pool.query<TUserInDatabase>(
-      `SELECT * FROM users WHERE id = $1 OR email = $2 OR nickname = $3`,
-      [id, email, nickname],
-    );
+    const sqlQuery = `SELECT * FROM users WHERE id = $1 OR email = $2 OR nickname = $3`;
+    let result: QueryResult<TUserRow>;
+    if (connection) {
+      result = await connection.query<TUserRow>(sqlQuery, [
+        id,
+        email,
+        nickname,
+      ]);
+    } else {
+      result = await this.pool.query<TUserRow>(sqlQuery, [id, email, nickname]);
+    }
 
     if (result.rows.length > 0) {
       return result.rows[0];
@@ -59,21 +68,29 @@ export class UsersRepository {
     }
   }
 
-  async changeCoinsAmount({userId, amount, connection}: TChangeUserCoinsAmount) {
-    const sqlQuery = `UPDATE users SET coins = coins + $1 WHERE id = $2`
+  async changeCoinsAmount({
+    userId,
+    amount,
+    connection,
+  }: TChangeUserCoinsAmount) {
+    const sqlQuery = `UPDATE users SET coins = coins + $1 WHERE id = $2`;
     if (connection) {
-      await connection.query(sqlQuery, [amount, userId])
+      await connection.query(sqlQuery, [amount, userId]);
     } else {
-       await this.pool.query(sqlQuery, [amount, userId]);
+      await this.pool.query(sqlQuery, [amount, userId]);
     }
   }
 
-  async changeExperienceAmount({userId, amount, connection}: TChangeUserExperienceAmount) {
-    const sqlQuery = `UPDATE users SET experience = experience + $1 WHERE id = $2`
+  async changeExperienceAmount({
+    userId,
+    amount,
+    connection,
+  }: TChangeUserExperienceAmount) {
+    const sqlQuery = `UPDATE users SET experience = experience + $1 WHERE id = $2`;
     if (connection) {
-      await connection.query(sqlQuery, [amount, userId])
+      await connection.query(sqlQuery, [amount, userId]);
     } else {
-       await this.pool.query(sqlQuery, [amount, userId]);
+      await this.pool.query(sqlQuery, [amount, userId]);
     }
   }
 }

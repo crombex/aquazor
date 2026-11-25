@@ -1,4 +1,4 @@
-import { PoolClient } from "pg";
+import { PoolClient } from 'pg';
 
 export enum Roles {
   ADMIN = 'admin',
@@ -29,7 +29,7 @@ export type TUserEntityMapped = Omit<
   roles: Roles[];
 };
 
-export type TUserInDatabase = {
+export type TUserRow = {
   id: string;
   email: string;
   password_hash: string;
@@ -51,12 +51,13 @@ export type TUserFindOptions = {
    * Never set 'true' if this user object leaves the server because of sensitive data
    */
   includeSensitiveData?: boolean;
+  connection?: PoolClient;
 };
 
 export type TChangeUserCoinsAmount = {
   userId: string;
   amount: number;
   connection?: PoolClient;
-}
+};
 
-export type TChangeUserExperienceAmount = TChangeUserCoinsAmount
+export type TChangeUserExperienceAmount = TChangeUserCoinsAmount;

@@ -6,6 +6,7 @@ import {
   TAddInventoryFisherman,
 } from './inventory-fishermen.types';
 import { TAddInventoryItem } from '../common/inventory.types';
+import { PoolClient } from 'pg';
 
 @Injectable()
 export class InventoryFishermenService {
@@ -32,11 +33,20 @@ export class InventoryFishermenService {
   }
 
   async findOneById(id: string) {
-    const foundFisherman = await this.inventoryFishermenRepository.findOneById(id);
+    const foundFisherman =
+      await this.inventoryFishermenRepository.findOneById(id);
     if (!foundFisherman) {
-      return null
+      return null;
     } else {
-      return mapKeysToCamelCase<InventoryFishermanEntity>(foundFisherman)
+      return mapKeysToCamelCase<InventoryFishermanEntity>(foundFisherman);
     }
+  }
+
+  async markBusy(fishermanId: string, connection: PoolClient) {
+    await this.inventoryFishermenRepository.markBusy(fishermanId, connection);
+  }
+
+  async markFree(fishermanId: string, connection: PoolClient) {
+    await this.inventoryFishermenRepository.markFree(fishermanId, connection);
   }
 }

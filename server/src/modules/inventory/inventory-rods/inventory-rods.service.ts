@@ -3,6 +3,7 @@ import { InventoryRodsRepository } from './inventory-rods.repository';
 import { mapKeysToCamelCase } from '../../../common/utils/change-case';
 import { InventoryRodEntity, TAddInventoryRod } from './inventory-rods.types';
 import { TAddInventoryItem } from '../common/inventory.types';
+import { PoolClient } from 'pg';
 
 @Injectable()
 export class InventoryRodsService {
@@ -22,12 +23,19 @@ export class InventoryRodsService {
   }
 
   async findOneById(id: string) {
-    const foundRod =
-      await this.inventoryRodsRepository.findOneById(id);
+    const foundRod = await this.inventoryRodsRepository.findOneById(id);
     if (!foundRod) {
-      return null
+      return null;
     } else {
-      return mapKeysToCamelCase<InventoryRodEntity>(foundRod)
+      return mapKeysToCamelCase<InventoryRodEntity>(foundRod);
     }
+  }
+
+  async markBusy(rodId: string, connection: PoolClient) {
+    await this.inventoryRodsRepository.markBusy(rodId, connection);
+  }
+
+  async markFree(fishermanId: string, connection: PoolClient) {
+    await this.inventoryRodsRepository.markFree(fishermanId, connection);
   }
 }

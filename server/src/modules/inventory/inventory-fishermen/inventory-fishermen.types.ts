@@ -7,12 +7,12 @@ export type TAddInventoryFisherman = {
   id: string;
   fishermanId: string;
   userId: string;
-  startedAt: string;
-  finishedAt: string;
-  energy: number;
+  startedAt?: string;
+  finishedAt?: string;
+  status: 'busy' | 'free';
 };
 
-export type TInventoryFishermanFromDatabase = Omit<
+export type TInventoryFishermanRow = Omit<
   InventoryFishermanEntity,
   | 'fishermanId'
   | 'userId'
@@ -24,7 +24,7 @@ export type TInventoryFishermanFromDatabase = Omit<
   fisherman_id: string;
   user_id: string;
   avatar_url: string;
-  levelRequired: number;
+  level_required: number;
   started_at: string;
   finished_at: string;
 };

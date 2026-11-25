@@ -1,24 +1,22 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Pool } from 'pg';
+import { Pool, PoolClient } from 'pg';
 import { DB_POOL } from '../../database/database.types';
-import {
-  TAddInventoryRod,
-  TInventoryRodFromDatabase,
-} from './inventory-rods.types';
+import { TAddInventoryRod, TInventoryRodRow } from './inventory-rods.types';
 import { TAddInventoryItem } from '../common/inventory.types';
 
 @Injectable()
 export class InventoryRodsRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
 
-  async getAllUserRods(userId: string): Promise<TInventoryRodFromDatabase[]> {
-    let sqlQuery = `
+  async getAllUserRods(userId: string): Promise<TInventoryRodRow[]> {
+    const sqlQuery = `
       SELECT 
         ir.id,
         ir.user_id,
         ir.rod_id,
         ir.started_at,
         ir.finished_at,
+        ir.status,
         r.type,
         r.rarity,
         r.efficiency,
@@ -34,23 +32,21 @@ export class InventoryRodsRepository {
       WHERE ir.user_id = $1
       ORDER BY r.type ASC
     `;
-    const result = await this.pool.query<TInventoryRodFromDatabase>(sqlQuery, [
-      userId,
-    ]);
+    const result = await this.pool.query<TInventoryRodRow>(sqlQuery, [userId]);
     return result.rows;
   }
 
-async addRod({
-    item: { id, rodId },
+  async addRod({
+    item: { id, rodId, status },
     userId,
     connection,
   }: TAddInventoryItem<TAddInventoryRod>) {
     const sqlQuery = `
       INSERT INTO inventory_rods
-        (id, user_id, rod_id) VALUES
-        ($1, $2, $3)
+        (id, user_id, rod_id, status) VALUES
+        ($1, $2, $3, $4)
         `;
-    const argsArray = [id, userId, rodId];
+    const argsArray = [id, userId, rodId, status];
     if (connection) {
       await connection.query(sqlQuery, argsArray);
     } else {
@@ -59,7 +55,7 @@ async addRod({
   }
 
   async findOneById(id: string) {
-    const result = await this.pool.query<TInventoryRodFromDatabase>(
+    const result = await this.pool.query<TInventoryRodRow>(
       `
       SELECT 
         ir.id,
@@ -67,6 +63,7 @@ async addRod({
         ir.rod_id,
         ir.started_at,
         ir.finished_at,
+        ir.status,
         r.type,
         r.rarity,
         r.efficiency,
@@ -88,5 +85,19 @@ async addRod({
     } else {
       return result.rows[0];
     }
+  }
+
+  async markBusy(rodId: string, connection: PoolClient) {
+    await connection.query(
+      `UPDATE inventory_rods SET status = 'busy' WHERE id = $1 AND status = 'free' AND (finished_at <= NOW() OR finished_at IS NULL)`,
+      [rodId],
+    );
+  }
+
+  async markFree(rodId: string, connection: PoolClient) {
+    await connection.query(
+      `UPDATE inventory_rods SET status = 'free' WHERE id = $1 AND status = 'busy' AND finished_at <= NOW()`,
+      [rodId],
+    );
   }
 }

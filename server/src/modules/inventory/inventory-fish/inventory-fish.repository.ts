@@ -3,7 +3,7 @@ import { Pool } from 'pg';
 import { DB_POOL } from '../../database/database.types';
 import {
   TAddInventoryFish,
-  TInventoryFishFromDatabase,
+  TInventoryFishRow,
 } from '../inventory-fish/inventory-fish.types';
 import {
   TAddInventoryItem,
@@ -13,17 +13,18 @@ import {
 export class InventoryFishRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
 
-  async getAllUserFish(userId: string): Promise<TInventoryFishFromDatabase[]> {
-    let sqlQuery = `
+  async getAllUserFish(userId: string): Promise<TInventoryFishRow[]> {
+    const sqlQuery = `
       SELECT 
         infi.id,
         infi.user_id,
         infi.fish_id,
         infi.weight,
         infi.length,
-        infi.description,
         infi.sell_price,
         infi.is_sold,
+        infi.caught_time,
+        fish.description,
         fish.image_url,
         fish.type,
         fish.rarity,
@@ -33,23 +34,29 @@ export class InventoryFishRepository {
       WHERE infi.user_id = $1
       ORDER BY fish.type ASC
     `;
-    const result = await this.pool.query<TInventoryFishFromDatabase>(sqlQuery, [
-      userId,
-    ]);
+    const result = await this.pool.query<TInventoryFishRow>(sqlQuery, [userId]);
     return result.rows;
   }
 
   async addFish({
-    item: { id, fishId, weight, length, sellPrice },
+    item: { id, fishId, weight, length, sellPrice, caughtTime },
     userId,
     connection,
   }: TAddInventoryItem<TAddInventoryFish>) {
     const sqlQuery = `
       INSERT INTO inventory_fish 
-        (id, user_id, fish_id, weight, length, sell_price) VALUES
-        ($1, $2, $3, $4, $5, $6)
+        (id, user_id, fish_id, weight, length, sell_price, caught_time) VALUES
+        ($1, $2, $3, $4, $5, $6, $7)
         `;
-    const argsArray = [id, userId, fishId, weight, length, sellPrice];
+    const argsArray = [
+      id,
+      userId,
+      fishId,
+      weight,
+      length,
+      sellPrice,
+      caughtTime,
+    ];
     if (connection) {
       await connection.query(sqlQuery, argsArray);
     } else {
@@ -58,7 +65,7 @@ export class InventoryFishRepository {
   }
 
   async findOneById(id: string) {
-    const result = await this.pool.query<TInventoryFishFromDatabase>(
+    const result = await this.pool.query<TInventoryFishRow>(
       `
       SELECT
         infi.id,
