@@ -1,13 +1,13 @@
 import { Pool } from 'pg';
 import { DB_POOL } from '../../database/database.types';
 import { Inject } from '@nestjs/common';
-import { TAddLocationForUser, TLocationInDatabase } from './locations.types';
+import { TAddLocationForUser, TLocationRow } from './locations.types';
 
 export class LocationsRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
 
   async findOneById(id: string) {
-    const query = await this.pool.query<TLocationInDatabase>(
+    const query = await this.pool.query<TLocationRow>(
       `SELECT 
         id,
         type,
@@ -34,7 +34,7 @@ export class LocationsRepository {
     if (connection) {
       await connection.query(sqlQuery, [userId, locationId]);
     } else {
-      this.pool.query(sqlQuery, [userId, locationId]);
+      await this.pool.query(sqlQuery, [userId, locationId]);
     }
   }
 
@@ -43,6 +43,6 @@ export class LocationsRepository {
       'SELECT * FROM users_locations WHERE user_id = $1 AND location_id = $2',
       [userId, locationId],
     );
-    return result.rows.length !== 0 ? true : false
+    return result.rows.length !== 0 ? true : false;
   }
 }

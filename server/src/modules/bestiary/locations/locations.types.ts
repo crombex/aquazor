@@ -1,4 +1,4 @@
-import { PoolClient } from "pg";
+import { PoolClient } from 'pg';
 
 export type LocationEntity = {
   id: string;
@@ -10,9 +10,9 @@ export type LocationEntity = {
   levelRequired: number;
   unavailable: boolean;
   price: number;
-}
+};
 
-export type TLocationInDatabase = Omit<
+export type TLocationRow = Omit<
   LocationEntity,
   'imageUrl' | 'levelRequired'
 > & {
@@ -23,6 +23,5 @@ export type TLocationInDatabase = Omit<
 export type TAddLocationForUser = {
   locationId: string;
   userId: string;
-  connection?: PoolClient
-}
-
+  connection?: PoolClient;
+};
