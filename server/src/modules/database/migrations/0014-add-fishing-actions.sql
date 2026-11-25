@@ -2,12 +2,10 @@ CREATE TABLE fishing_actions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- уникальный идентификатор одного действия рыбалки
   user_id UUID NOT NULL REFERENCES users(id), -- идентификатор игрока, который совершил действие рыбалки
   location_id UUID NOT NULL REFERENCES locations(id), -- идентификатор локации, где было совершено действие рыбалки
-  inventory_fish_id UUID REFERENCES inventory_fish(id), -- идентификатор пойманной рыбы, которая была получена в результате действия рыбалки
-  inventory_fisherman_id UUID REFERENCES inventory_fishermans(id), -- идентификатор рыбака, который был использован в действии рыбалки
-  inventory_rod_id UUID REFERENCES inventory_rods(id), -- идентификатор удочки, которая была использована в действии рыбалки
-  inventory_bait_id UUID REFERENCES inventory_baits(id), -- идентификатор приманки, которая была использована в действии рыбалки
-  started_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP, -- дата и время начала действия рыбалки
-  finished_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP + INTERVAL '3 hours', -- дата и время окончания действия рыбалки
-  is_successful BOOLEAN NOT NULL -- флаг, указывающий на успешность действия рыбалки
-  -- По started_at и finished_at мы группируем разные действия рыбалки, чтобы опредеить, что это один заход рыбалки, а не несколько разных
-)
+  inventory_fisherman_id UUID REFERENCES inventory_fishermen(id), -- идентификатор рыбака, который был использован в действии рыбалки
+  started_at TIMESTAMPTZ DEFAULT NOW(), -- дата и время начала действия рыбалки
+  finished_at TIMESTAMPTZ DEFAULT NOW(), -- дата и время окончания действия рыбалки
+  status TEXT NOT NULL CHECK (status in ('pending', 'completed')) DEFAULT 'pending'
+);
+
+CREATE INDEX idx_fishing_actions_finished_at ON fishing_actions (finished_at) WHERE status = 'pending';

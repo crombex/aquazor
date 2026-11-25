@@ -6,6 +6,6 @@ CREATE TABLE inventory_fish (
   weight REAL NOT NULL, -- вес пойманной рыбы
   length REAL NOT NULL, -- длина пойманной рыбы
   sell_price INT NOT NULL,
-  is_sold BOOLEAN NOT NULL DEFAULT FALSE
-  caught_time NOT NULL TIMESTAMPTZ
+  is_sold BOOLEAN NOT NULL DEFAULT FALSE,
+  caught_time TIMESTAMPTZ NOT NULL DEFAULT NOW()
 )
