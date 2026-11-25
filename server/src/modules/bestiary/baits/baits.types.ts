@@ -1,4 +1,4 @@
-import { TGameRarity } from "../../game/game.types";
+import { TGameRarity } from '../../game/game.types';
 
 export type BaitEntity = {
   id: string;
@@ -11,9 +11,9 @@ export type BaitEntity = {
   sellPrice: number;
   levelRequired: number;
   unavailable: boolean;
-}
+};
 
-export type TBaitInDatabase = Omit<
+export type TBaitRow = Omit<
   BaitEntity,
   'avatarUrl' | 'levelRequired' | 'sellPrice' | 'buyPrice'
 > & {
@@ -22,4 +22,3 @@ export type TBaitInDatabase = Omit<
   sell_price: number;
   buy_price: number;
 };
-

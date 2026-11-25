@@ -9,13 +9,12 @@ export type FishermanEntity = {
   levelRequired: number;
   unavailable: boolean;
   price: number;
-}
+};
 
-export type TFishermanInDatabase = Omit<
+export type TFishermanRow = Omit<
   FishermanEntity,
   'avatarUrl' | 'levelRequired'
 > & {
   avatar_url: string;
   level_required: number;
 };
-

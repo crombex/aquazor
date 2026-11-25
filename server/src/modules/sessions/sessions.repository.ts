@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { Inject, Injectable } from '@nestjs/common';
 import { DB_POOL } from '../database/database.types';
-import { IAuthSessionInDatabase, ICreateAuthSession } from './sessions.types';
+import { IAuthSessionRow, ICreateAuthSession } from './sessions.types';
 
 @Injectable()
 export class SessionsRepository {
@@ -20,7 +20,7 @@ export class SessionsRepository {
   }
 
   async findSession(sid: string) {
-    const session = await this.pool.query<IAuthSessionInDatabase>(
+    const session = await this.pool.query<IAuthSessionRow>(
       `SELECT * FROM user_sessions WHERE id = $1`,
       [sid],
     );

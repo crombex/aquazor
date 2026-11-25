@@ -12,7 +12,7 @@ export interface ICreateAuthSession {
   sessionExpiresAt: string;
 }
 
-export interface IAuthSessionInDatabase {
+export interface IAuthSessionRow {
   id: string;
   user_id: string;
   started_at: string;

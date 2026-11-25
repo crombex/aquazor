@@ -10,7 +10,7 @@ export type TAddInventoryBait = {
   userId: string;
 };
 
-export type TInventoryBaitFromDatabase = Omit<
+export type TInventoryBaitRow = Omit<
   InventoryBaitEntity,
   'sellPrice' | 'baitId' | 'userId' | 'imageUrl' | 'buyPrice' | 'levelRequired'
 > & {
@@ -18,8 +18,8 @@ export type TInventoryBaitFromDatabase = Omit<
   bait_id: string;
   user_id: string;
   image_url: string;
-  buyPrice: number;
-  levelRequired: number;
+  buy_price: number;
+  level_required: number;
 };
 
 export type TChangeInvenoryBaitsAmount = {

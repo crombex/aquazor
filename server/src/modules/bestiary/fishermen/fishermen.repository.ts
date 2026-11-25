@@ -1,13 +1,13 @@
 import { Pool } from 'pg';
 import { DB_POOL } from '../../database/database.types';
 import { Inject } from '@nestjs/common';
-import { TFishermanInDatabase } from './fishermen.types';
+import { TFishermanRow } from './fishermen.types';
 
 export class FishermenRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
 
   async findOneById(id: string) {
-    const query = await this.pool.query<TFishermanInDatabase>(
+    const query = await this.pool.query<TFishermanRow>(
       `SELECT 
         id,
         name,

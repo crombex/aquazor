@@ -1,4 +1,4 @@
-import { TGameRarity } from "../../game/game.types";
+import { TGameRarity } from '../../game/game.types';
 
 export type RodEntity = {
   id: string;
@@ -12,9 +12,9 @@ export type RodEntity = {
   buyPrice: number;
   sellPrice: number;
   levelRequired: number;
-}
+};
 
-export type TRodInDatabase = Omit<
+export type TRodRow = Omit<
   RodEntity,
   'imageUrl' | 'buyPrice' | 'sellPrice' | 'levelRequired'
 > & {

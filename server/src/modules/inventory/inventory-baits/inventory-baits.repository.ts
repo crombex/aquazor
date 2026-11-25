@@ -4,7 +4,7 @@ import { DB_POOL } from '../../database/database.types';
 import {
   TAddInventoryBait,
   TChangeInvenoryBaitsAmount,
-  TInventoryBaitFromDatabase,
+  TInventoryBaitRow,
 } from './inventory-baits.types';
 import { TAddInventoryItem } from '../common/inventory.types';
 
@@ -12,8 +12,8 @@ import { TAddInventoryItem } from '../common/inventory.types';
 export class InventoryBaitsRepository {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
 
-  async getAllUserBaits(userId: string): Promise<TInventoryBaitFromDatabase[]> {
-    let sqlQuery = `
+  async getAllUserBaits(userId: string): Promise<TInventoryBaitRow[]> {
+    const sqlQuery = `
       SELECT 
         ib.id,
         ib.user_id,
@@ -33,9 +33,7 @@ export class InventoryBaitsRepository {
       WHERE ib.user_id = $1
       ORDER BY b.type ASC
     `;
-    const result = await this.pool.query<TInventoryBaitFromDatabase>(sqlQuery, [
-      userId,
-    ]);
+    const result = await this.pool.query<TInventoryBaitRow>(sqlQuery, [userId]);
     return result.rows;
   }
 
@@ -58,7 +56,7 @@ export class InventoryBaitsRepository {
   }
 
   async findOneById(id: string) {
-    const result = await this.pool.query<TInventoryBaitFromDatabase>(
+    const result = await this.pool.query<TInventoryBaitRow>(
       `
       SELECT 
         ib.id,
