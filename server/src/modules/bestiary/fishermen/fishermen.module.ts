@@ -4,6 +4,6 @@ import { FishermenRepository } from './fishermen.repository';
 
 @Module({
   providers: [FishermenService, FishermenRepository],
-  exports: [FishermenService]
+  exports: [FishermenService],
 })
 export class FishermenModule {}

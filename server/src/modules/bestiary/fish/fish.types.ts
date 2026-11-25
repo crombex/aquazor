@@ -1,4 +1,4 @@
-import { TGameRarity } from "../../game/game.types";
+import { TGameRarity } from '../../game/game.types';
 
 export type FishEntity = {
   id: string;
@@ -14,9 +14,9 @@ export type FishEntity = {
   rarity: TGameRarity;
   minSellPrice: number;
   unavailable: boolean;
-}
+};
 
-export type TFishInDatabase = Pick<
+export type TFishRow = Pick<
   FishEntity,
   'id' | 'unavailable' | 'description' | 'rarity' | 'type'
 > & {
@@ -29,8 +29,3 @@ export type TFishInDatabase = Pick<
   image_url: string;
   min_sell_price: number;
 };
-
-export type TFishForResponseData = Omit<
-  FishEntity,
-  'maxProbability' | 'minProbability'
->;

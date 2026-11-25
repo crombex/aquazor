@@ -5,10 +5,10 @@ export function getRandomValue() {
 }
 
 export function randomPickInRange(min: number, max: number, round = false) {
-  let value = min + (max - min) * getRandomValue()
+  const value = min + (max - min) * getRandomValue();
   if (!round) {
-    return value
+    return value;
   } else {
-    return Math.round(value)
+    return Math.round(value);
   }
 }

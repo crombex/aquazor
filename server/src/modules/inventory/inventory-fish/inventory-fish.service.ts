@@ -5,7 +5,10 @@ import {
   TAddInventoryFish,
 } from '../inventory-fish/inventory-fish.types';
 import { mapKeysToCamelCase } from '../../../common/utils/change-case';
-import { TAddInventoryItem, TRemoveInventoryItem } from '../common/inventory.types';
+import {
+  TAddInventoryItem,
+  TRemoveInventoryItem,
+} from '../common/inventory.types';
 
 @Injectable()
 export class InventoryFishService {
@@ -27,13 +30,13 @@ export class InventoryFishService {
   async findOneById(id: string) {
     const foundFish = await this.inventoryFishRepository.findOneById(id);
     if (!foundFish) {
-      return null
+      return null;
     } else {
-      return mapKeysToCamelCase<InventoryFishEntity>(foundFish) 
+      return mapKeysToCamelCase<InventoryFishEntity>(foundFish);
     }
   }
 
   async writeOffFish(params: TRemoveInventoryItem) {
-    await this.inventoryFishRepository.writeOffFish(params)
+    await this.inventoryFishRepository.writeOffFish(params);
   }
 }

@@ -1,4 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Pool, PoolClient } from 'pg';
 import { DB_POOL } from '../../database/database.types';
 import { TAddInventoryRod, TInventoryRodRow } from './inventory-rods.types';
@@ -87,17 +91,30 @@ export class InventoryRodsRepository {
     }
   }
 
-  async markBusy(rodId: string, connection: PoolClient) {
-    await connection.query(
-      `UPDATE inventory_rods SET status = 'busy' WHERE id = $1 AND status = 'free' AND (finished_at <= NOW() OR finished_at IS NULL)`,
-      [rodId],
+  async markBusy(
+    {
+      rodId,
+      startedAt,
+      finishedAt,
+    }: { rodId: string; startedAt: string; finishedAt: string },
+    connection: PoolClient,
+  ) {
+    const result = await connection.query(
+      `UPDATE inventory_rods SET status = 'busy', started_at = $1, finished_at = $2 WHERE id = $3 AND status = 'free' AND (finished_at <= NOW() OR finished_at IS NULL)`,
+      [startedAt, finishedAt, rodId],
     );
+    if (result.rowCount === 0) {
+      throw new InternalServerErrorException('Internal server error');
+    }
   }
 
   async markFree(rodId: string, connection: PoolClient) {
-    await connection.query(
+    const result = await connection.query(
       `UPDATE inventory_rods SET status = 'free' WHERE id = $1 AND status = 'busy' AND finished_at <= NOW()`,
       [rodId],
     );
+    if (result.rowCount === 0) {
+      throw new InternalServerErrorException('Internal server error');
+    }
   }
 }

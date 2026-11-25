@@ -4,6 +4,6 @@ import { RodsRepository } from './rods.repository';
 
 @Module({
   providers: [RodsService, RodsRepository],
-  exports: [RodsService]
+  exports: [RodsService],
 })
 export class RodsModule {}

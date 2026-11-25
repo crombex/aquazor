@@ -22,7 +22,7 @@ export class BestiatyController {
 
   @Get('fish/:id')
   getFish(@Param('id', ParseUUIDPipe) id: string) {
-    return this.fishService.findOneById(id, { forResponse: true });
+    return this.fishService.findOneById(id);
   }
 
   @Get('fishermen/:id')

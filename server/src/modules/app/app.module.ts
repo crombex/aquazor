@@ -8,6 +8,9 @@ import { RodsModule } from '../bestiary/rods/rods.module';
 import { LocationsModule } from '../bestiary/locations/locations.module';
 import { FishermenModule } from '../bestiary/fishermen/fishermen.module';
 import { BaitsModule } from '../bestiary/baits/baits.module';
+import { GameModule } from '../game/game.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksModule } from '../tasks/tasks.module';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { BaitsModule } from '../bestiary/baits/baits.module';
     LocationsModule,
     FishermenModule,
     BaitsModule,
+    GameModule,
+    ScheduleModule.forRoot(),
+    TasksModule
   ],
 })
 export class AppModule {}

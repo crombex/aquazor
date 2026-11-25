@@ -31,8 +31,11 @@ export class InventoryRodsService {
     }
   }
 
-  async markBusy(rodId: string, connection: PoolClient) {
-    await this.inventoryRodsRepository.markBusy(rodId, connection);
+  async markBusy(
+    params: { rodId: string; startedAt: string; finishedAt: string },
+    connection: PoolClient,
+  ) {
+    await this.inventoryRodsRepository.markBusy(params, connection);
   }
 
   async markFree(fishermanId: string, connection: PoolClient) {

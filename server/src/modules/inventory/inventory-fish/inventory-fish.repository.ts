@@ -94,7 +94,7 @@ export class InventoryFishRepository {
   }
 
   async writeOffFish({ id, connection }: TRemoveInventoryItem) {
-    const sqlQuery = `UPDATE TABLE inventory_fish SET is_sold = TRUE WHERE id = $1`;
+    const sqlQuery = `UPDATE inventory_fish SET is_sold = TRUE WHERE id = $1`;
     if (connection) {
       await connection.query(sqlQuery, [id]);
     } else {

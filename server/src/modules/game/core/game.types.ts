@@ -25,6 +25,7 @@ export interface IGameSlot {
   rod: RodEntity | null;
   bait: BaitEntity | null;
   experienceEarned: number;
+  baitConsumed: boolean;
 }
 
 interface IRaritySlot {

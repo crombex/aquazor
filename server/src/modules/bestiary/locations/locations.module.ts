@@ -4,6 +4,6 @@ import { LocationsRepository } from './locations.repository';
 
 @Module({
   providers: [LocationsService, LocationsRepository],
-  exports: [LocationsService]
+  exports: [LocationsService],
 })
 export class LocationsModule {}

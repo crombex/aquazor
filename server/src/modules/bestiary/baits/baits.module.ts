@@ -4,6 +4,6 @@ import { BaitsRepository } from './baits.repository';
 
 @Module({
   providers: [BaitsService, BaitsRepository],
-  exports: [BaitsService]
+  exports: [BaitsService],
 })
 export class BaitsModule {}

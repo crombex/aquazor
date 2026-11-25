@@ -17,19 +17,21 @@ import {
   logit,
   simulateProbability,
 } from './helpers';
-import { FishService } from '../../bestiary/fish/fish.service';
+import { FishEntity } from '../../bestiary/fish/fish.types';
 
 @Injectable()
 export class GameCoreService {
-  constructor(private readonly fishService: FishService) {}
-
-  async simulate({ rods, baits, fisherman, player, location }: IGameInputData) {
+  simulate(
+    { rods, baits, fisherman, player, location }: IGameInputData,
+    fishBestiary: FishEntity[],
+  ) {
     const rodsCopy = structuredClone(rods);
     const baitsCopy = structuredClone(baits);
     const fishermanSkillNormalized = (fisherman.skill + 1) / 2;
 
     const totalBaits = baitsCopy.reduce((acc, bait) => acc + bait.quantity, 0);
-    const slotsNumber = totalBaits * gameConstants.slotsPerBait + Math.floor(player.level / 2);
+    const slotsNumber =
+      totalBaits * gameConstants.slotsPerBait + Math.floor(player.level / 2);
     const fishingTime =
       slotsNumber * gameConstants.secondsPerSlot -
       (rods.length - 1) * gameConstants.secondsReductionPerExtraRod;
@@ -39,7 +41,8 @@ export class GameCoreService {
       actualFish: null,
       rod: null,
       bait: null,
-      experienceEarned: 0
+      experienceEarned: 0,
+      baitConsumed: true,
     }));
     for (let index = 0; index < slots.length; index++) {
       const slot = slots[index];
@@ -56,9 +59,12 @@ export class GameCoreService {
         }
       }
       if (baitIndex >= 0) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { quantity, ...bait } = structuredClone(baitsCopy[baitIndex]);
         slot.bait = bait;
         baitsCopy[baitIndex].quantity--;
+      } else {
+        slot.baitConsumed = false;
       }
 
       const fertilityNormalized = (location.fertility - 1) / 2;
@@ -72,12 +78,17 @@ export class GameCoreService {
         gameWeights.baitRarity * baitRarityNormalized;
       const randomRarity = getFishRarity(attractiveness);
       if (randomRarity !== 'nothing') {
-        const randomBestiaryFish =
-          await this.fishService.getOneInCategory(randomRarity);
-        slot.bestiaryFish = randomBestiaryFish;
+        const categoryBestiary = fishBestiary.filter(
+          (fish) => fish.rarity === randomRarity,
+        );
+        slot.bestiaryFish =
+          categoryBestiary[
+            randomPickInRange(0, categoryBestiary.length - 1, true)
+          ];
       } else {
         if (slot.bait) {
           baitsCopy[baitIndex].quantity++;
+          slot.baitConsumed = false;
         }
       }
     }
@@ -88,6 +99,7 @@ export class GameCoreService {
         );
         const rodEfficiencyNormalized = (slot.rod!.efficiency + 1) / 2;
         if (!slot.bait && newFreeBaitIndexIfPossible !== -1) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { quantity, ...bait } = structuredClone(
             baitsCopy[newFreeBaitIndexIfPossible],
           );
@@ -142,6 +154,9 @@ export class GameCoreService {
                 (elem) => elem.id === slot.bait!.id,
               );
               baitsCopy[baitsArrayIndex].quantity++;
+              slot.baitConsumed = false;
+            } else {
+              slot.baitConsumed = true;
             }
           }
         }
@@ -149,13 +164,16 @@ export class GameCoreService {
     });
     slots.forEach((slot) => {
       if (slot.bestiaryFish && slot.actualFish) {
-        slot.experienceEarned += experiencePerFishRarity[slot.bestiaryFish.rarity];
+        slot.experienceEarned +=
+          experiencePerFishRarity[slot.bestiaryFish.rarity];
       }
     });
     return {
+      /**
+       * seconds
+       */
       fishingTime,
       attempts: slots,
-      baitsRemained: baitsCopy,
     };
   }
 }

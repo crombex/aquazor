@@ -42,8 +42,11 @@ export class InventoryFishermenService {
     }
   }
 
-  async markBusy(fishermanId: string, connection: PoolClient) {
-    await this.inventoryFishermenRepository.markBusy(fishermanId, connection);
+  async markBusy(
+    payload: { fishermanId: string; startedAt: string; finishedAt: string },
+    connection: PoolClient,
+  ) {
+    await this.inventoryFishermenRepository.markBusy(payload, connection);
   }
 
   async markFree(fishermanId: string, connection: PoolClient) {

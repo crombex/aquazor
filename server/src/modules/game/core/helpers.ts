@@ -4,8 +4,8 @@ import { IRarity } from './game.types';
 import { getRandomValue } from '../../../common/utils/random-pick';
 
 export function simulateProbability(targetProbability: number) {
-  const p = getRandomValue()
-  return p < targetProbability ? true : false
+  const p = getRandomValue();
+  return p < targetProbability ? true : false;
 }
 
 export function logit(u: number) {

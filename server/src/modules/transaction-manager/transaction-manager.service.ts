@@ -3,7 +3,7 @@ import { DB_POOL } from '../database/database.types';
 import { Pool, PoolClient } from 'pg';
 
 @Injectable()
-export class MigrationManagerService {
+export class TransactionManagerService {
   constructor(@Inject(DB_POOL) private pool: Pool) {}
 
   async run(callback: (client: PoolClient) => Promise<void>) {

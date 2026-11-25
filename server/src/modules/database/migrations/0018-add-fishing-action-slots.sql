@@ -3,36 +3,27 @@ CREATE TABLE fishing_action_slots (
     fishing_action_id UUID NOT NULL REFERENCES fishing_actions(id),
     slot_number SMALLINT NOT NULL,
     inventory_rod_id UUID NOT NULL REFERENCES inventory_rods(id),
-    inventory_bait_id UUID NOT NULL REFERENCES inventory_baits(id),
-    fish_id UUID NOT NULL REFERENCES fish(id),
+    inventory_bait_id UUID REFERENCES inventory_baits(id),
+    fish_id UUID REFERENCES fish(id),
     was_caught BOOLEAN NOT NULL DEFAULT FALSE,
     fish_weight REAL,
     fish_length REAL,
     fish_sell_price INT,
-    experience_earned SMALLINT,
-    bait_consumed BOOLEAN NOT NULL DEFAULT TRUE,
+    experience_earned SMALLINT NOT NULL,
+    bait_consumed BOOLEAN NOT NULL,
     inventory_fish_id UUID REFERENCES inventory_fish(id),
 
     -- 1. Номер слота должен быть положительным (начинается с 1)
     CONSTRAINT chk_slot_number_positive CHECK (slot_number > 0),
 
-    -- 2. Положительные значения для характеристик (если они указаны)
-    CONSTRAINT chk_fish_stats_positive CHECK (
-        fish_weight > 0
-        AND fish_length > 0
-        AND fish_sell_price > 0
-        AND experience_earned > 0
-    ),
-
-    -- 3. Связь статуса поимки (was_caught) и данных о рыбе
+    -- 2. Связь статуса поимки (was_caught) и данных о рыбе
     CONSTRAINT chk_caught_consistency CHECK (
         (
             was_caught = TRUE
-            AND fish_weight IS NOT NULL
-            AND fish_length IS NOT NULL
-            AND fish_sell_price IS NOT NULL
-            AND experience_earned IS NOT NULL
-            AND inventory_fish_id IS NOT NULL
+            AND fish_weight > 0
+            AND fish_length > 0
+            AND fish_sell_price > 0
+            AND experience_earned > 0
         )
         OR
         (
@@ -45,6 +36,6 @@ CREATE TABLE fishing_action_slots (
         )
     ),
 
-    -- 4. Уникальность номера слота в рамках одного действия рыбалки
+    -- 3. Уникальность номера слота в рамках одного действия рыбалки
     CONSTRAINT uq_fishing_action_slot UNIQUE (fishing_action_id, slot_number)
 );

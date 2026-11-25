@@ -155,7 +155,7 @@ export class UsersService {
 
   async changeCoinsAmount({ userId, amount, ...rest }: TChangeUserCoinsAmount) {
     const foundUser = (await this.findOneById(userId, {
-      includeSensitiveData: true,
+      includeSensitiveData: true, connection: rest.connection
     })) as UserEntity;
     this.checkUserValidity(foundUser);
     if (amount < 0 && foundUser.coins < Math.abs(amount)) {
@@ -170,7 +170,7 @@ export class UsersService {
     ...rest
   }: TChangeUserExperienceAmount) {
     const foundUser = (await this.findOneById(userId, {
-      includeSensitiveData: true,
+      includeSensitiveData: true, connection: rest.connection
     })) as UserEntity;
     this.checkUserValidity(foundUser);
     if (amount < 0 && foundUser.experience < Math.abs(amount)) {
