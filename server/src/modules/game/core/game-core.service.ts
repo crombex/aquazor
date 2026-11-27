@@ -135,9 +135,10 @@ export class GameCoreService {
             slot.bestiaryFish.minLength +
             (slot.bestiaryFish.maxLength - slot.bestiaryFish.minLength) *
               sizeOffset;
-          const fishPrice =
+          const fishPrice = Math.round(
             slot.bestiaryFish.minSellPrice *
-            Math.sqrt(fishWeight / slot.bestiaryFish.minWeight);
+              Math.sqrt(fishWeight / slot.bestiaryFish.minWeight),
+          );
           const caughtFish: TActualFish = {
             fishId: slot.bestiaryFish.id,
             weight: fishWeight,
