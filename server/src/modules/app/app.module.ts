@@ -10,7 +10,6 @@ import { FishermenModule } from '../bestiary/fishermen/fishermen.module';
 import { BaitsModule } from '../bestiary/baits/baits.module';
 import { GameModule } from '../game/game.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { TasksModule } from '../tasks/tasks.module';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { TasksModule } from '../tasks/tasks.module';
     BaitsModule,
     GameModule,
     ScheduleModule.forRoot(),
-    TasksModule
   ],
 })
 export class AppModule {}

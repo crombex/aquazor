@@ -3,11 +3,9 @@ import { UsersRepository } from './users.repository';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { AuthGuardModule } from '../guards/auth-guard.module';
-import { TokensModule } from '../tokens/tokens.module';
-import { SessionsModule } from '../sessions/sessions.module';
 
 @Module({
-  imports: [forwardRef(() => AuthGuardModule), TokensModule, SessionsModule],
+  imports: [forwardRef(() => AuthGuardModule)],
   controllers: [UsersController],
   providers: [UsersRepository, UsersService],
   exports: [UsersService],

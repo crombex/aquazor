@@ -182,12 +182,13 @@ export class GameService {
     const baitsToWriteOff = structuredClone(baits).map((bait) => ({
       inventoryBaitId: bait.id,
       quantity: 0,
-      baitId: userBaits.find(elem => elem.id === bait.id)!.baitId
+      baitId: userBaits.find((elem) => elem.id === bait.id)!.baitId,
     }));
 
     fishingResult.attempts.forEach((slot) => {
       if (slot.baitConsumed) {
-        baitsToWriteOff.find((elem) => elem.baitId === slot.bait!.id)!.quantity++;
+        baitsToWriteOff.find((elem) => elem.baitId === slot.bait!.id)!
+          .quantity++;
       }
     });
 
