@@ -30,8 +30,10 @@ export class GameCoreService {
     const fishermanSkillNormalized = (fisherman.skill + 1) / 2;
 
     const totalBaits = baitsCopy.reduce((acc, bait) => acc + bait.quantity, 0);
-    const slotsNumber =
-      totalBaits * gameConstants.slotsPerBait + Math.floor(player.level / 2);
+    const slotsNumber = Math.min(
+      totalBaits * gameConstants.slotsPerBait + Math.floor(player.level / 2),
+      gameConstants.maxSlots,
+    );
     const fishingTime =
       slotsNumber * gameConstants.secondsPerSlot -
       (rods.length - 1) * gameConstants.secondsReductionPerExtraRod;
