@@ -180,12 +180,14 @@ export class GameService {
     ).toISOString();
 
     const baitsToWriteOff = structuredClone(baits).map((bait) => ({
-      ...bait,
+      inventoryBaitId: bait.id,
       quantity: 0,
+      baitId: userBaits.find(elem => elem.id === bait.id)!.baitId
     }));
+
     fishingResult.attempts.forEach((slot) => {
       if (slot.baitConsumed) {
-        baitsToWriteOff.find((elem) => elem.id === slot.bait!.id)!.quantity++;
+        baitsToWriteOff.find((elem) => elem.baitId === slot.bait!.id)!.quantity++;
       }
     });
 
@@ -199,8 +201,8 @@ export class GameService {
 
       for (const bait of baitsToWriteOff) {
         await this.inventoryBaitsService.changeBaitsAmount({
-          id: bait.id,
-          amount: bait.quantity,
+          id: bait.inventoryBaitId,
+          amount: -bait.quantity,
           connection: client,
         });
       }
@@ -232,8 +234,12 @@ export class GameService {
             id: crypto.randomUUID(),
             fishingActionId: fishingActionUuid,
             slotNumber: index + 1,
-            inventoryRodId: attempt.rod!.id,
-            inventoryBaitId: attempt.bait ? attempt.bait.id : null,
+            inventoryRodId: userRods.find(
+              (item) => item.rodId === attempt.rod!.id,
+            )!.id,
+            inventoryBaitId: attempt.bait
+              ? userBaits.find((item) => item.baitId === attempt.bait!.id)!.id
+              : null,
             fishId: attempt.bestiaryFish ? attempt.bestiaryFish.id : null,
             wasCaught: attempt.actualFish ? true : false,
             fishWeight: attempt.actualFish ? attempt.actualFish.weight : null,
