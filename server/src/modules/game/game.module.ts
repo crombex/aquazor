@@ -14,6 +14,7 @@ import { BaitsModule } from '../bestiary/baits/baits.module';
 import { FishermenModule } from '../bestiary/fishermen/fishermen.module';
 import { TransactionManagerModule } from '../transaction-manager/transaction-manager.module';
 import { GameRepository } from './game.repository';
+import { FishModule } from '../bestiary/fish/fish.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { GameRepository } from './game.repository';
     BaitsModule,
     FishermenModule,
     TransactionManagerModule,
+    FishModule,
   ],
   controllers: [GameController],
   providers: [GameService, GameRepository],
