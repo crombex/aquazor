@@ -17,12 +17,15 @@ import {
 export class GameRepository {
   constructor(@Inject(DB_POOL) private readonly pool: Pool) {}
 
-  async getPendingActions(connection: PoolClient) {
-    const result = await connection.query<TFishingActionRow>(
-      `SELECT * FROM fishing_actions WHERE status = 'pending' AND finished_at <= NOW() LIMIT 20`,
-    );
-    const rows = result.rows;
-    return rows;
+  async getPendingActions(connection?: PoolClient) {
+    const sqlQuery = `SELECT * FROM fishing_actions WHERE status = 'pending' AND finished_at <= NOW() LIMIT 20`;
+    let result: TFishingActionRow[];
+    if (connection) {
+      result = (await connection.query<TFishingActionRow>(sqlQuery)).rows;
+    } else {
+      result = (await this.pool.query<TFishingActionRow>(sqlQuery)).rows;
+    }
+    return result;
   }
 
   async updateAction(actionId: string, connection: PoolClient) {

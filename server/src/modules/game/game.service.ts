@@ -261,14 +261,12 @@ export class GameService {
   }
 
   async closeCompletedActions() {
-    await this.transactionManager.run(async (client: PoolClient) => {
-      const finishedActionRows =
-        await this.gameRepository.getPendingActions(client);
-      const finishedActions = finishedActionRows.map((elem) =>
-        mapKeysToCamelCase<IFishingAction>(elem),
-      );
-
-      for (let i = 0; i < finishedActions.length; i++) {
+    const finishedActionRows = await this.gameRepository.getPendingActions();
+    const finishedActions = finishedActionRows.map((elem) =>
+      mapKeysToCamelCase<IFishingAction>(elem),
+    );
+    for (let i = 0; i < finishedActions.length; i++) {
+      await this.transactionManager.run(async (client: PoolClient) => {
         const actionSlots = await this.gameRepository.getActionSlots(
           finishedActions[i].id,
           client,
@@ -340,8 +338,8 @@ export class GameService {
           finishedActions[i].inventoryFishermanId,
           client,
         );
-      }
-    });
+      });
+    }
   }
 
   async getUserFullFishingActions({
